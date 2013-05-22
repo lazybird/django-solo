@@ -52,7 +52,7 @@ for instance, if you need some global site settings to be edited in the admin.
 Django Solo provides a modified admin for that.
 
 
-![django-solo admin](https://raw.github.com/lazybird/django-solo/master/docs/images/django-solo-admin.png "django-solo admin")
+![django-solo admin](https://raw.github.com/lazybird/django-solo/master/docs/images/django-solo-admin.jpg "django-solo admin")
 
 
 * In the admin home page where all applications are listed, we have a `config`
