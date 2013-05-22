@@ -1,3 +1,4 @@
 include *.md
 include LICENSE
 include CHANGES
+recursive-include solo/templates *
