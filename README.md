@@ -2,9 +2,19 @@
 Django Solo
 ===========
 
-Django Solo helps working with singletons, database tables that only have
-one row. Singletons are useful for things like global settings that you want
-to edit from the admin site - versus having them in Django `settings.py`.
+
+    +---------------------------+
+    |                           |
+    |                           |
+    |             \             | Django Solo helps working with singletons:
+    |             /\            | database tables that only have one row.
+    |           >=)'>           | Singletons are useful for things like global
+    |             \/            | settings that you want to edit from the admin
+    |             /             | instead of having them in Django settings.py
+    |                           |
+    |                           |
+    +---------------------------+
+
 
 Features
 --------
