@@ -87,6 +87,7 @@ dotted path:
 Example:
 
 
+    {% load solo_tags %}
     {% get_solo 'config.SiteConfiguration' as site_config %}
     {{ site_config.site_name }}
     {{ site_config.maintenance_mode }}
