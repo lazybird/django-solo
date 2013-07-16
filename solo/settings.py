@@ -7,6 +7,6 @@ GET_SOLO_TEMPLATE_TAG_NAME = getattr(settings,
 # Set to None to disable caching.
 SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None)
 
-SOLO_CACHE_TIMEOUT = getattr(settings, 'SOLO_CACHE_TIMEOUT', 60*60*60)
+SOLO_CACHE_TIMEOUT = getattr(settings, 'SOLO_CACHE_TIMEOUT', 60*5)
 
 SOLO_CACHE_PREFIX = 'solo'

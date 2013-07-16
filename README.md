@@ -145,7 +145,7 @@ Caching will be disabled if set to `None`.
 
 The cache timeout in seconds.
 
-    SOLO_CACHE_TIMEOUT = 60*60*60
+    SOLO_CACHE_TIMEOUT = 60*5  # 5 mins
 
 ### Cache prefix
 
