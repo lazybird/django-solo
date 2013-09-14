@@ -36,9 +36,9 @@ class SigletonTest(TestCase):
         fake_configuration = {'site_name': 'Config In Cache'}
         self.cache.set(self.cache_key, fake_configuration, 10)
         output = self.template.render(Context())
-        self.assertIn('Config In Cache', output)
         self.assertNotIn('Config In Database', output)
         self.assertNotIn('Default Config', output)
+        self.assertIn('Config In Cache', output)
 
     def test_template_tag_uses_database_if_cache_disabled(self):
         solo_settings.SOLO_CACHE = None
@@ -46,6 +46,6 @@ class SigletonTest(TestCase):
         fake_configuration = {'site_name': 'Config In Cache'}
         self.cache.set(self.cache_key, fake_configuration, 10)
         output = self.template.render(Context())
-        self.assertIn('Config In Database', output)
         self.assertNotIn('Config In Cache', output)
         self.assertNotIn('Default Config', output)
+        self.assertIn('Config In Database', output)
