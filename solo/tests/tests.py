@@ -17,6 +17,8 @@ class SigletonTest(TestCase):
         )
         self.cache = get_cache('default')
         self.cache_key = SiteConfiguration.get_cache_key()
+        self.cache.clear()
+        SiteConfiguration.objects.all().delete()
 
     def test_template_tag_renders_default_site_config(self):
         SiteConfiguration.objects.all().delete()
