@@ -5,8 +5,8 @@ GET_SOLO_TEMPLATE_TAG_NAME = getattr(settings,
 
 # The cache that should be used, e.g. 'default'. Refers to Django CACHES setting.
 # Set to None to disable caching.
-SOLO_CACHE = getattr(settings, 'SOLO_CACHE', None)
+SOLO_CACHE = None
 
-SOLO_CACHE_TIMEOUT = getattr(settings, 'SOLO_CACHE_TIMEOUT', 60*5)
+SOLO_CACHE_TIMEOUT = 60*5
 
 SOLO_CACHE_PREFIX = 'solo'

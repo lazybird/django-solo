@@ -2,6 +2,7 @@ from django.core.cache import get_cache
 from django.template import Template, Context
 from django.test import TestCase
 
+from django.test.utils import override_settings
 from solo import settings as solo_settings
 from solo.tests.models import SiteConfiguration
 
@@ -30,8 +31,8 @@ class SigletonTest(TestCase):
         output = self.template.render(Context())
         self.assertIn('Test Config', output)
 
+    @override_settings(SOLO_CACHE='default')
     def test_template_tag_uses_cache_if_enabled(self):
-        solo_settings.SOLO_CACHE = 'default'
         SiteConfiguration.objects.create(site_name='Config In Database')
         fake_configuration = {'site_name': 'Config In Cache'}
         self.cache.set(self.cache_key, fake_configuration, 10)
@@ -40,8 +41,8 @@ class SigletonTest(TestCase):
         self.assertNotIn('Default Config', output)
         self.assertIn('Config In Cache', output)
 
+    @override_settings(SOLO_CACHE=None)
     def test_template_tag_uses_database_if_cache_disabled(self):
-        solo_settings.SOLO_CACHE = None
         SiteConfiguration.objects.create(site_name='Config In Database')
         fake_configuration = {'site_name': 'Config In Cache'}
         self.cache.set(self.cache_key, fake_configuration, 10)
