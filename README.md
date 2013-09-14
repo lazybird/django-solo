@@ -54,6 +54,19 @@ Usage Example
     admin.site.register(SiteConfiguration, SingletonModelAdmin)
 
 
+Installation
+------------
+
+This application requires Django version 1.4; all versions above should be fine.
+
+Just install the package using something like pip and add ``solo`` to
+your ``INSTALLED_APPS`` setting.
+
+This is how you run tests:
+
+    ./manage.py test tests --settings=solo.tests.settings
+
+
 Admin
 -----
 
