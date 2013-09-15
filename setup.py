@@ -12,11 +12,5 @@ setup(
     author='lazybird',
     long_description=open('README.md').read(),
     include_package_data=True,
-    classifiers=[
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'License :: Creative Commons Attribution 3.0 Unported',
-        'Operating System :: OS Independent',
-        'Topic :: Software Development'
-    ],
+    license='Creative Commons Attribution 3.0 Unported',
 )
