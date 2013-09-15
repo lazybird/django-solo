@@ -1,3 +1,14 @@
+django-solo-1.0.1
+==================
+
+Date: September 14, 2013
+
+* Added unit tests
+* Added support for @override_settings
+* Updated doc, licence and packaging
+
+
+* * *
 django-solo-1.0.0
 ==================
 
