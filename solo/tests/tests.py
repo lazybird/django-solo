@@ -3,7 +3,6 @@ from django.template import Template, Context
 from django.test import TestCase
 
 from django.test.utils import override_settings
-from solo import settings as solo_settings
 from solo.tests.models import SiteConfiguration
 
 
