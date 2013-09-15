@@ -1,5 +1,16 @@
+django-solo-1.0.2
+=================
+
+Date: September 14, 2013
+
+* Fixed some packaging issues.
+
+
+* * *
+
+
 django-solo-1.0.1
-==================
+=================
 
 Date: September 14, 2013
 
@@ -9,8 +20,9 @@ Date: September 14, 2013
 
 
 * * *
+
 django-solo-1.0.0
-==================
+=================
 
 Date: July 11, 2013
 
