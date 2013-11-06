@@ -1,9 +1,12 @@
-from django.conf.urls import patterns, url
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext as _
 
+try:
+    from django.conf.urls.defaults import url, patterns
+except ImportError:
+    from django.conf.urls import url, patterns
 
 class SingletonModelAdmin(admin.ModelAdmin):
     object_history_template = "admin/solo/object_history.html"
