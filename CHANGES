@@ -1,3 +1,15 @@
+django-solo-1.0.4
+=================
+
+Date: November 6, 2013
+
+
+* Issue #4: Django 1.6 compatibility on `url` and `pattern` import path.
+
+
+* * *
+
+
 django-solo-1.0.3
 =================
 
