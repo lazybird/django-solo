@@ -53,6 +53,10 @@ Usage Example
 
     admin.site.register(SiteConfiguration, SingletonModelAdmin)
 
+    # There is only one item in the table, you can get it this way:
+    from .models import SiteConfiguration
+    config = SiteConfiguration.objects.get()
+
 
 Installation
 ------------
