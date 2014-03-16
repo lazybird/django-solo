@@ -1,7 +1,10 @@
 from django.conf.urls import url, patterns
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.utils.encoding import force_unicode
+try:
+    from django.utils.encoding import force_unicode
+except ImportError:
+    from django.utils.encoding import force_text as force_unicode 
 from django.utils.translation import ugettext as _
 
 
