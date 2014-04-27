@@ -1,3 +1,15 @@
+django-solo-1.0.5
+=================
+
+Date: April 27, 2014
+
+
+* Pull Request #8: Python3 compatibility issue with `force_unicode` import statement.
+
+
+* * *
+
+
 django-solo-1.0.4
 =================
 
