@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_text as force_unicode
+    from django.utils.encoding import force_text as force_unicode 
 from django.utils.translation import ugettext as _
 
 
@@ -23,17 +23,17 @@ class SingletonModelAdmin(admin.ModelAdmin):
         url_name_prefix = '%(app_name)s_%(model_name)s' % {
             'app_name': self.model._meta.app_label,
             'model_name': self.model._meta.module_name,
-            }
+        }
         custom_urls = patterns('',
-                               url(r'^history/$',
-                                   self.admin_site.admin_view(self.history_view),
-                                   {'object_id': str(self.model.objects.get_solo_pk())},
-                                   name='%s_history' % url_name_prefix),
-                               url(r'^$',
-                                   self.admin_site.admin_view(self.change_view),
-                                   {'object_id': str(self.model.objects.get_solo_pk())},
-                                   name='%s_change' % url_name_prefix),
-                               )
+            url(r'^history/$',
+                self.admin_site.admin_view(self.history_view),
+                {'object_id': '1'},
+                name='%s_history' % url_name_prefix),
+            url(r'^$',
+                self.admin_site.admin_view(self.change_view),
+                {'object_id': '1'},
+                name='%s_change' % url_name_prefix),
+        )
         # By inserting the custom URLs first, we overwrite the standard URLs.
         return custom_urls + urls
 
@@ -47,13 +47,10 @@ class SingletonModelAdmin(admin.ModelAdmin):
             return HttpResponseRedirect("../../")
 
     def change_view(self, request, object_id, extra_context=None):
-        # Creates a row if we're accessing it for the first time
-        if object_id == str(self.model.objects.get_solo_pk()):
-            self.model.objects.get_or_create(pk=self.model.objects.get_solo_pk())
-
+        if object_id == '1':
+            self.model.objects.get_or_create(pk=1)
         return super(SingletonModelAdmin, self).change_view(
             request,
             object_id,
             extra_context=extra_context,
-            )
-
+        )
