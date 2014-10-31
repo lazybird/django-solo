@@ -36,7 +36,7 @@ class SingletonModel(models.Model):
     def get_solo(cls):
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if not cache_name:
-            obj, creted = cls.objects.get_or_create(pk=1)
+            obj, created = cls.objects.get_or_create(pk=1)
             return obj
         cache = get_cache(cache_name)
         cache_key = cls.get_cache_key()
