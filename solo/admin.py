@@ -20,9 +20,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super(SingletonModelAdmin, self).get_urls()
-
         self.model._meta.verbose_name_plural = self.model._meta.verbose_name
-        
         url_name_prefix = '%(app_name)s_%(model_name)s' % {
             'app_name': self.model._meta.app_label,
             'model_name': self.model._meta.model_name,
