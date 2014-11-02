@@ -1,3 +1,17 @@
+django-solo-1.1.0
+=================
+
+Date: November 2, 2014
+
+* Fixed warning messages showing up on Django 1.7.
+* No need to define a plural name anymore - Pull Request #16.
+* Fixed some inconsistent variable names.
+* Added 'load url from future' so templates work with Django 1.4 - Pull Request #14.
+
+
+* * *
+
+
 django-solo-1.0.5
 =================
 
