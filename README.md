@@ -43,7 +43,6 @@ Usage Example
 
         class Meta:
             verbose_name = "Site Configuration"
-            verbose_name_plural = "Site Configuration"
 
     # admin.py
 
@@ -56,6 +55,10 @@ Usage Example
     # There is only one item in the table, you can get it this way:
     from .models import SiteConfiguration
     config = SiteConfiguration.objects.get()
+
+
+In your model, note how you did not have to provide a `verbose_name_plural` field -
+That's because Django Solo uses the `verbose_name` instead.
 
 
 Installation

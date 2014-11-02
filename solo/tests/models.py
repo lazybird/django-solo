@@ -11,4 +11,3 @@ class SiteConfiguration(SingletonModel):
 
     class Meta:
         verbose_name = "Site Configuration"
-        verbose_name_plural = "Site Configuration"
