@@ -56,6 +56,9 @@ Usage Example
     from .models import SiteConfiguration
     config = SiteConfiguration.objects.get()
 
+    # get_solo will create the item if it does not already exist
+    config = SiteConfiguration.get_solo()
+
 
 In your model, note how you did not have to provide a `verbose_name_plural` field -
 That's because Django Solo uses the `verbose_name` instead.
