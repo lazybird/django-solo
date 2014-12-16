@@ -19,7 +19,7 @@ Django Solo
 Features
 --------
 
-* You define the model that will hold you settings.
+* You define the model that will hold your settings.
 * django-solo gives helper parent class for your model and the admin classes.
 * You get an admin interface that's aware you only have one object.
 * You can retrieve the object from templates.
