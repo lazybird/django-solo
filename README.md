@@ -189,3 +189,12 @@ The prefix to use for the cache key.
 
     SOLO_CACHE_PREFIX = 'solo'
 
+================
+Getting the code
+================
+
+The code is hosted at https://github.com/lazybird/django-solo/
+
+Check out the latest development version anonymously with::
+
+    $ git clone git://github.com/lazybird/django-solo.git
