@@ -27,6 +27,17 @@ Solo helps you enforce instantiating only one instance of a model in django.
 * You can retrieve the object from templates.
 * By enabling caching, the database is not queried intensively.
 
+Use Cases
+--------
+
+Django Solo is also great for use with singleton objects that have a one to many relationship. Like the use case below where you have a 'Home Slider" that has many "Slides".
+
+* Global or default settings
+* An image slider that has many slides
+* A page section that has sub-sections
+* A team bio with many team members
+
+There are many cases where it makes sense for the parent in a one to many relationship to be limited to a single instance.
 
 Usage Example
 -------------
@@ -177,15 +188,4 @@ The cache timeout in seconds.
 The prefix to use for the cache key.
 
     SOLO_CACHE_PREFIX = 'solo'
-    
-Use Cases
---------
 
-Django Solo is also great for use with singleton objects that have a one to many relationship. Like the use case below where you have a 'Home Slider" that has many "Slides".
-
-* Global or default settings
-* An image slider that has many slides
-* A page section that has sub-sections
-* A team bio with many team members
-
-There are many cases where it makes sense for the parent in a one to many relationship to be limited to a single instance.
