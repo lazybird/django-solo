@@ -1,4 +1,10 @@
-from django.core.cache import get_cache
+try:
+    from django.core.cache import get_cache
+except ImportError:
+    from django.core.cache import caches
+
+    get_cache = lambda cache_name: caches[cache_name]
+
 from django.template import Template, Context
 from django.test import TestCase
 
