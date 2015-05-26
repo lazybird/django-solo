@@ -1,8 +1,8 @@
 try:
-    from django.core.cache import get_cache
-except ImportError:
     from django.core.cache import caches
-
+except ImportError:
+    from django.core.cache import get_cache
+else:
     get_cache = lambda cache_name: caches[cache_name]
 
 from django.template import Template, Context
