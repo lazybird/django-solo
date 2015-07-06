@@ -1,12 +1,17 @@
 from django.conf import settings
-from django.core.cache import get_cache
 from django.db import models
+
+try:
+    from django.core.cache import caches
+except ImportError:
+    from django.core.cache import get_cache
+else:
+    get_cache = lambda cache_name: caches[cache_name]
 
 from solo import settings as solo_settings
 
 
 class SingletonModel(models.Model):
-
     class Meta:
         abstract = True
 
