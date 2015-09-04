@@ -2,6 +2,11 @@ from django import template
 from django.db import models
 from django.utils.translation import ugettext as _
 
+try:
+    from django.apps import apps.get_model as get_model
+except ImportError:
+    from django.db.models import get_model
+
 from solo import settings as solo_settings
 
 
@@ -17,7 +22,7 @@ def get_solo(model_path):
             "Templatetag requires the model dotted path: 'app_label.ModelName'. "
             "Received '%s'." % model_path
         ))
-    model_class = models.get_model(app_label, model_name)
+    model_class = get_model(app_label, model_name)
     if not model_class:
         raise template.TemplateSyntaxError(_(
             "Could not get the model name '%(model)s' from the application "
