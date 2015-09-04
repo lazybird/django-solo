@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 
 try:
-    from django.apps import apps.get_model as get_model
+    from django.apps import get_model
 except ImportError:
     from django.db.models import get_model
 
