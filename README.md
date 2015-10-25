@@ -80,7 +80,7 @@ That's because Django Solo uses the `verbose_name` instead.
 Installation
 ------------
 
-This application requires Django >= 1.4.
+This application requires Django >= 1.6.
 
 Just install the package using `pip install django-solo` and add ``solo`` to
 your ``INSTALLED_APPS`` setting.
