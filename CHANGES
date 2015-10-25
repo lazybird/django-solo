@@ -1,3 +1,15 @@
+django-solo-1.1.1
+=================
+
+Date: July 6, 2015
+
+* Change the use of get_cache for Django 1.9
+* Fixed warning messages showing up on Django 1.8
+
+
+* * *
+
+
 django-solo-1.1.0
 =================
 
