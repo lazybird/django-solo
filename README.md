@@ -82,8 +82,8 @@ Installation
 
 This application requires Django >= 1.6.
 
-Just install the package using `pip install django-solo` and add ``solo`` to
-your ``INSTALLED_APPS`` setting.
+* Install the package using `pip install django-solo`
+* Add ``solo`` or ``solo.apps.SoloAppConfig`` to your ``INSTALLED_APPS`` setting.
 
 This is how you run tests:
 
