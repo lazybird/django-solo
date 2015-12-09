@@ -1,10 +1,13 @@
 django-solo-1.1.1
 =================
 
-Date: July 6, 2015
+Date: december 9, 2015
 
-* Change the use of get_cache for Django 1.9
-* Fixed warning messages showing up on Django 1.8
+* Add apps module with a basic app config class.
+* Change the use of get_cache for Django 1.9.
+* Fixed warning messages showing up on Django 1.8.
+* Remove 'load url from future' tag from template (1.9).
+* Change the way `get_model` is imported. 
 
 
 * * *
