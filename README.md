@@ -129,6 +129,30 @@ Example:
     {{ site_config.maintenance_mode }}
 
 
+If you're extending a template, be sure to use the tag in the proper scope.
+
+Right:
+
+    {% extends "index.html" %}
+    {% load solo_tags %}
+    
+    {% block content %}
+        {% get_solo 'config.SiteConfiguration' as site_config %}
+        {{ site_config.site_name }}
+    {% endblock content %}
+
+Wrong:
+
+    {% extends "index.html" %}
+    {% load solo_tags %}
+    {% get_solo 'config.SiteConfiguration' as site_config %}
+    
+    {% block content %}
+        {{ site_config.site_name }}
+    {% endblock content %}
+
+
+
 Caching
 -------
 
