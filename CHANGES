@@ -1,7 +1,18 @@
+django-solo-1.1.2
+=================
+
+Date: February 7, 2016
+
+* Documentation update - Elaborated on usage of the template tag
+* #37: Update custom_urls in admin.py due to deprecation warning
+* #39: Deprecation warning in tests - `TEMPLATES` setting
+
+
+* * *
 django-solo-1.1.1
 =================
 
-Date: december 9, 2015
+Date: December 9, 2015
 
 * Add apps module with a basic app config class.
 * Change the use of get_cache for Django 1.9.
