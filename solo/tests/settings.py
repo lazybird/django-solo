@@ -29,3 +29,10 @@ CACHES = {
 }
 
 SOLO_CACHE = 'default'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+    },
+]
