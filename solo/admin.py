@@ -39,11 +39,11 @@ class SingletonModelAdmin(admin.ModelAdmin):
         custom_urls = patterns('',
             url(r'^history/$',
                 self.admin_site.admin_view(self.history_view),
-                {'object_id': str(self.singleton_pk)},
+                {'object_id': str(self.singleton_instance_id)},
                 name='%s_history' % url_name_prefix),
             url(r'^$',
                 self.admin_site.admin_view(self.change_view),
-                {'object_id': str(self.singleton_pk)},
+                {'object_id': str(self.singleton_instance_id)},
                 name='%s_change' % url_name_prefix),
         )
         # By inserting the custom URLs first, we overwrite the standard URLs.
@@ -59,8 +59,8 @@ class SingletonModelAdmin(admin.ModelAdmin):
             return HttpResponseRedirect("../../")
 
     def change_view(self, request, object_id, extra_context=None):
-        if object_id == str(self.singleton_pk):
-            self.model.objects.get_or_create(pk=self.singleton_pk)
+        if object_id == str(self.singleton_instance_id):
+            self.model.objects.get_or_create(pk=self.singleton_instance_id)
         return super(SingletonModelAdmin, self).change_view(
             request,
             object_id,
@@ -68,5 +68,5 @@ class SingletonModelAdmin(admin.ModelAdmin):
         )
 
     @property
-    def singleton_pk(self):
+    def singleton_instance_id(self):
         return getattr(self.model, 'singleton_instance_id', DEFAULT_SINGLETON_INSTANCE_ID)
