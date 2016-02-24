@@ -11,3 +11,14 @@ class SiteConfiguration(SingletonModel):
 
     class Meta:
         verbose_name = "Site Configuration"
+
+
+class SiteConfigurationWithExplicitlyGivenId(SingletonModel):
+    singleton_instance_id = 24
+    site_name = models.CharField(max_length=255, default='Default Config')
+
+    def __unicode__(self):
+        return "Site Configuration"
+
+    class Meta:
+        verbose_name = "Site Configuration"

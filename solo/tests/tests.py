@@ -3,10 +3,10 @@ from django.test import TestCase
 
 from django.test.utils import override_settings
 from solo.models import get_cache
-from solo.tests.models import SiteConfiguration
+from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
 
 
-class SigletonTest(TestCase):
+class SingletonTest(TestCase):
 
     def setUp(self):
         self.template = Template(
@@ -51,3 +51,13 @@ class SigletonTest(TestCase):
         self.assertNotIn('Config In Cache', output)
         self.assertNotIn('Default Config', output)
         self.assertIn('Config In Database', output)
+
+
+class SingletonWithExplicitIdTest(TestCase):
+
+    def setUp(self):
+        SiteConfigurationWithExplicitlyGivenId.objects.all().delete()
+
+    def test_when_singleton_instance_id_is_given_created_item_will_have_given_instance_id(self):
+        item = SiteConfigurationWithExplicitlyGivenId.get_solo()
+        self.assertEquals(item.pk, SiteConfigurationWithExplicitlyGivenId.singleton_instance_id)
