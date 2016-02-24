@@ -76,7 +76,7 @@ Usage Example
 In your model, note how you did not have to provide a `verbose_name_plural` field -
 That's because Django Solo uses the `verbose_name` instead.
 
-If you're changing an existing model (which already has some objects stored in the database) to a singleton model, you can explicitly provide the id of the row in the database to use by django-solo as singleton. This can be done by setting `singleton_instance_id` property on the model`:
+If you're changing an existing model (which already has some objects stored in the database) to a singleton model, you can explicitly provide the id of the row in the database for django-solo to use. This can be done by setting `singleton_instance_id` property on the model:
 
     class SiteConfiguration(SingletonModel):
         singleton_instance_id = 24
