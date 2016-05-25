@@ -58,12 +58,13 @@ class SingletonModelAdmin(admin.ModelAdmin):
             self.message_user(request, msg)
             return HttpResponseRedirect("../../")
 
-    def change_view(self, request, object_id, extra_context=None):
+    def change_view(self, request, object_id, form_url='', extra_context=None):
         if object_id == str(self.singleton_instance_id):
             self.model.objects.get_or_create(pk=self.singleton_instance_id)
         return super(SingletonModelAdmin, self).change_view(
             request,
             object_id,
+            form_url=form_url,
             extra_context=extra_context,
         )
 
