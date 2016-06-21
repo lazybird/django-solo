@@ -52,6 +52,34 @@ class SingletonTest(TestCase):
         self.assertNotIn('Default Config', output)
         self.assertIn('Config In Database', output)
 
+    @override_settings(SOLO_CACHE='default')
+    def test_delete_if_cache_enabled(self):
+        self.assertEqual(SiteConfiguration.objects.count(), 0)
+        self.assertIsNone(self.cache.get(self.cache_key))
+
+        one_cfg = SiteConfiguration.get_solo()
+        one_cfg.site_name = 'TEST SITE PLEASE IGNORE'
+        one_cfg.save()
+        self.assertEqual(SiteConfiguration.objects.count(), 1)
+        self.assertIsNotNone(self.cache.get(self.cache_key))
+
+        one_cfg.delete()
+        self.assertEqual(SiteConfiguration.objects.count(), 0)
+        self.assertIsNone(self.cache.get(self.cache_key))
+        self.assertEqual(SiteConfiguration.get_solo().site_name, 'Default Config')
+
+    @override_settings(SOLO_CACHE=None)
+    def test_delete_if_cache_disabled(self):
+        # As above, but without the cache checks
+        self.assertEqual(SiteConfiguration.objects.count(), 0)
+        one_cfg = SiteConfiguration.get_solo()
+        one_cfg.site_name = 'TEST (uncached) SITE PLEASE IGNORE'
+        one_cfg.save()
+        self.assertEqual(SiteConfiguration.objects.count(), 1)
+        one_cfg.delete()
+        self.assertEqual(SiteConfiguration.objects.count(), 0)
+        self.assertEqual(SiteConfiguration.get_solo().site_name, 'Default Config')
+
 
 class SingletonWithExplicitIdTest(TestCase):
 
