@@ -40,37 +40,40 @@ Django Solo is also great for use with singleton objects that have a one to many
 There are many cases where it makes sense for the parent in a one to many relationship to be limited to a single instance.
 
 Usage Example
--------------
 
-    # models.py
+```python
+# models.py
 
-    from django.db import models
-    from solo.models import SingletonModel
+from django.db import models
+from solo.models import SingletonModel
 
-    class SiteConfiguration(SingletonModel):
-        site_name = models.CharField(max_length=255, default='Site Name')
-        maintenance_mode = models.BooleanField(default=False)
+class SiteConfiguration(SingletonModel):
+    site_name = models.CharField(max_length=255, default='Site Name')
+    maintenance_mode = models.BooleanField(default=False)
 
-        def __unicode__(self):
-            return u"Site Configuration"
+    def __unicode__(self):
+        return u"Site Configuration"
 
-        class Meta:
-            verbose_name = "Site Configuration"
+    class Meta:
+        verbose_name = "Site Configuration"
+```
 
-    # admin.py
+```python
+# admin.py
 
-    from django.contrib import admin
-    from solo.admin import SingletonModelAdmin
-    from config.models import SiteConfiguration
+from django.contrib import admin
+from solo.admin import SingletonModelAdmin
+from config.models import SiteConfiguration
 
-    admin.site.register(SiteConfiguration, SingletonModelAdmin)
+admin.site.register(SiteConfiguration, SingletonModelAdmin)
 
-    # There is only one item in the table, you can get it this way:
-    from .models import SiteConfiguration
-    config = SiteConfiguration.objects.get()
+# There is only one item in the table, you can get it this way:
+from .models import SiteConfiguration
+config = SiteConfiguration.objects.get()
 
-    # get_solo will create the item if it does not already exist
-    config = SiteConfiguration.get_solo()
+# get_solo will create the item if it does not already exist
+config = SiteConfiguration.get_solo()
+```
 
 
 In your model, note how you did not have to provide a `verbose_name_plural` field -
@@ -78,9 +81,11 @@ That's because Django Solo uses the `verbose_name` instead.
 
 If you're changing an existing model (which already has some objects stored in the database) to a singleton model, you can explicitly provide the id of the row in the database for django-solo to use. This can be done by setting `singleton_instance_id` property on the model:
 
-    class SiteConfiguration(SingletonModel):
-        singleton_instance_id = 24
-        # (...)
+```python
+class SiteConfiguration(SingletonModel):
+    singleton_instance_id = 24
+    # (...)
+```
 
 Installation
 ------------
@@ -122,40 +127,46 @@ Availability from templates
 The singleton object can be retrieved from template by giving the Django model
 dotted path:
 
-    {% get_solo 'app_label.ModelName' as my_config %}
+```django
+{% get_solo 'app_label.ModelName' as my_config %}
+```
 
 
 Example:
 
-
-    {% load solo_tags %}
-    {% get_solo 'config.SiteConfiguration' as site_config %}
-    {{ site_config.site_name }}
-    {{ site_config.maintenance_mode }}
+```django
+{% load solo_tags %}
+{% get_solo 'config.SiteConfiguration' as site_config %}
+{{ site_config.site_name }}
+{{ site_config.maintenance_mode }}
+```
 
 
 If you're extending a template, be sure to use the tag in the proper scope.
 
 Right:
 
-    {% extends "index.html" %}
-    {% load solo_tags %}
-    
-    {% block content %}
-        {% get_solo 'config.SiteConfiguration' as site_config %}
-        {{ site_config.site_name }}
-    {% endblock content %}
+```django
+{% extends "index.html" %}
+{% load solo_tags %}
+
+{% block content %}
+    {% get_solo 'config.SiteConfiguration' as site_config %}
+    {{ site_config.site_name }}
+{% endblock content %}
+```
 
 Wrong:
 
-    {% extends "index.html" %}
-    {% load solo_tags %}
-    {% get_solo 'config.SiteConfiguration' as site_config %}
-    
-    {% block content %}
-        {{ site_config.site_name }}
-    {% endblock content %}
+```django
+{% extends "index.html" %}
+{% load solo_tags %}
+{% get_solo 'config.SiteConfiguration' as site_config %}
 
+{% block content %}
+    {{ site_config.site_name }}
+{% endblock content %}
+```
 
 
 Caching
@@ -182,7 +193,9 @@ template tag.
 You can change the name `get_solo` using the
 `GET_SOLO_TEMPLATE_TAG_NAME` setting.
 
-    GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
+```python
+GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
+```
 
 ### Cache backend
 
@@ -190,17 +203,19 @@ Django provides a way to define multiple cache backends with the `CACHES`
 settings. If you want the singleton object to be cached separately, you
 could define the `CACHES` and the `SOLO_CACHE` settings like this:
 
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-        },
-        'local': {
-            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        },
-    }
+```python
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    },
+    'local': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+}
 
-    SOLO_CACHE = 'local'
+SOLO_CACHE = 'local'
+```
 
 
 Caching will be disabled if set to `None`.
@@ -210,13 +225,17 @@ Caching will be disabled if set to `None`.
 
 The cache timeout in seconds.
 
-    SOLO_CACHE_TIMEOUT = 60*5  # 5 mins
+```python
+SOLO_CACHE_TIMEOUT = 60*5  # 5 mins
+```
 
 ### Cache prefix
 
 The prefix to use for the cache key.
 
-    SOLO_CACHE_PREFIX = 'solo'
+```python
+SOLO_CACHE_PREFIX = 'solo'
+```
 
 ================
 Getting the code
