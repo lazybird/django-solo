@@ -2,13 +2,10 @@
 {% load i18n %}
 
 {% block breadcrumbs %}
-<div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo; 
-<a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo; 
-<a href="../">{{ object|truncatewords:"18" }}</a> &rsaquo; 
-{% trans 'History' %}
-
-</div>
+    <ul class="grp-horizontal-list">
+        <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+        <li><a href="../../">{{ app_label|capfirst|escape }}</a></li>
+        <li><a href="../">{{ object|truncatewords:"18" }}</a></li>
+        <li>{% trans 'History' %}</li>
+    </ul>
 {% endblock %}
-
-
