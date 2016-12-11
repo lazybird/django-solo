@@ -3,7 +3,7 @@
 {% load admin_urls %}
 
 {% block breadcrumbs %}
-    <ul class="grp-horizontal-list">
+    <ul class="breadcrumbs{% if 'grappelli' in django_settings.INSTALLED_APPS %} grp-horizontal-list{% endif %}">
         <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
         <li><a href="../../">{{ app_label|capfirst|escape }}</a></li>
         <li>{{ opts.verbose_name|capfirst }}</li>

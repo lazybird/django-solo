@@ -1,14 +1,14 @@
+from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-
+from django.utils.translation import ugettext as _
 from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_text as force_unicode 
-from django.utils.translation import ugettext as _
+    from django.utils.encoding import force_text as force_unicode
 
 
 class SingletonModelAdmin(admin.ModelAdmin):
@@ -50,15 +50,19 @@ class SingletonModelAdmin(admin.ModelAdmin):
         return custom_urls + urls
 
     def response_change(self, request, obj):
-        msg = _('%(obj)s was changed successfully.') % {'obj': force_unicode(obj)}
+        msg = _('%(obj)s was changed successfully.') % {
+            'obj': force_unicode(obj)}
         if '_continue' in request.POST:
-            self.message_user(request, msg + ' ' + _('You may edit it again below.'))
+            self.message_user(request, msg + ' ' +
+                              _('You may edit it again below.'))
             return HttpResponseRedirect(request.path)
         else:
             self.message_user(request, msg)
             return HttpResponseRedirect("../../")
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['django_settings'] = settings
         if object_id == str(self.singleton_instance_id):
             self.model.objects.get_or_create(pk=self.singleton_instance_id)
         return super(SingletonModelAdmin, self).change_view(
@@ -70,4 +74,5 @@ class SingletonModelAdmin(admin.ModelAdmin):
 
     @property
     def singleton_instance_id(self):
-        return getattr(self.model, 'singleton_instance_id', DEFAULT_SINGLETON_INSTANCE_ID)
+        return getattr(
+            self.model, 'singleton_instance_id', DEFAULT_SINGLETON_INSTANCE_ID)
