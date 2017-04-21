@@ -13,7 +13,7 @@ except ImportError:
 register = template.Library()
 
 
-@register.assignment_tag(name=solo_settings.GET_SOLO_TEMPLATE_TAG_NAME)
+@register.simple_tag(name=solo_settings.GET_SOLO_TEMPLATE_TAG_NAME)
 def get_solo(model_path):
     try:
         app_label, model_name = model_path.rsplit('.', 1)
