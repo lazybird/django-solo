@@ -1,6 +1,11 @@
 from django import template
 from django.utils.translation import ugettext as _
 
+try:
+    from django.apps import get_model
+except ImportError:
+    from django.db.models import get_model
+
 from solo import settings as solo_settings
 
 try:
