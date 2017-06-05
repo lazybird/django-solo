@@ -19,8 +19,8 @@ class SingletonModel(models.Model):
 
     def save(self, *args, **kwargs):
         self.pk = self.singleton_instance_id
-        self.set_to_cache()
         super(SingletonModel, self).save(*args, **kwargs)
+        self.set_to_cache()
 
     def delete(self, *args, **kwargs):
         self.clear_cache()
