@@ -1,3 +1,4 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 
 from solo.models import SingletonModel
@@ -5,6 +6,7 @@ from solo.models import SingletonModel
 
 class SiteConfiguration(SingletonModel):
     site_name = models.CharField(max_length=255, default='Default Config')
+    file = models.FileField(upload_to='files', default=SimpleUploadedFile("default-file.pdf", None))
 
     def __unicode__(self):
         return "Site Configuration"

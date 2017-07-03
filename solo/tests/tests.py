@@ -1,3 +1,4 @@
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import Template, Context
 from django.test import TestCase
 
@@ -13,6 +14,7 @@ class SingletonTest(TestCase):
             '{% load solo_tags %}'
             '{% get_solo "tests.SiteConfiguration" as site_config  %}'
             '{{ site_config.site_name }}'
+            '{{ site_config.file.url }}'
         )
         self.cache = get_cache('default')
         self.cache_key = SiteConfiguration.get_cache_key()
@@ -79,6 +81,12 @@ class SingletonTest(TestCase):
         one_cfg.delete()
         self.assertEqual(SiteConfiguration.objects.count(), 0)
         self.assertEqual(SiteConfiguration.get_solo().site_name, 'Default Config')
+
+    @override_settings(SOLO_CACHE='default')
+    def test_file_upload_if_cache_enabled(self):
+        cfg = SiteConfiguration.objects.create(site_name='Test Config', file=SimpleUploadedFile("file.pdf", None))
+        output = self.template.render(Context())
+        self.assertIn(cfg.file.url, output)
 
 
 class SingletonWithExplicitIdTest(TestCase):
