@@ -88,6 +88,12 @@ class SingletonTest(TestCase):
         output = self.template.render(Context())
         self.assertIn(cfg.file.url, output)
 
+    @override_settings(SOLO_CACHE_PREFIX='other')
+    def test_cache_prefix_overriding(self):
+        key = SiteConfiguration.get_cache_key()
+        prefix = key.partition(':')[0]
+        self.assertEqual(prefix, 'other')
+
 
 class SingletonWithExplicitIdTest(TestCase):
 
