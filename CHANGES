@@ -1,3 +1,24 @@
+django-solo-1.1.3
+=================
+
+Date: 15 January, 2018
+
+
+* Merge pull request #64 from the-vishal/patch-2
+* Merge pull request #59 from hefting/fix-template-context
+* Retrieve app_label from opts in template context - Since Django 1.7
+* Fixes #57 -- read SOLO_CACHE_PREFIX from main Django settings
+* Merge pull request #56 from girogiro/master
+* Fixed #54 -- wrong caching of FileField
+* Merge pull request #55 from jaimesanz/master
+* Fixed RemovedInDjango20Warning deprecation warning
+* Merge pull request #50 from m16a1/patch-1
+* .delete() actually deletes now (#48)
+* Fix #45 add form_url to change_view (#46)
+* Added support for configuring the pk value of the singleton instance (#42)
+
+* * *
+
 django-solo-1.1.2
 =================
 
@@ -18,7 +39,7 @@ Date: December 9, 2015
 * Change the use of get_cache for Django 1.9.
 * Fixed warning messages showing up on Django 1.8.
 * Remove 'load url from future' tag from template (1.9).
-* Change the way `get_model` is imported. 
+* Change the way `get_model` is imported.
 
 
 * * *
