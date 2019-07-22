@@ -2,5 +2,6 @@
 """
 
 __version__ = '1.1.3'
+__doc__ = 'Django Solo helps working with singletons'
 
 default_app_config = 'solo.apps.SoloAppConfig'
