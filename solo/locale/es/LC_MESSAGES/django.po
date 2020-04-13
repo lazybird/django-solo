@@ -1,0 +1,57 @@
+# Spanish translation for django-solo.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-solo package.
+# Álvaro Mondéjar <mondejar1994@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-13 16:13+0200\n"
+"PO-Revision-Date: 2008-11-30 12:12\n"
+"Last-Translator: <mondejar1994@gmail.com>\n"
+"Language-Team: es\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: solo/admin.py:53
+#, python-format
+msgid "%(obj)s was changed successfully."
+msgstr "%(obj)s fue editado correctamente."
+
+#: solo/admin.py:55
+msgid "You may edit it again below."
+msgstr "Puede volverlo a editar otra vez a continuación."
+
+#: solo/templates/admin/solo/change_form.html:7
+#: solo/templates/admin/solo/object_history.html:6
+msgid "Home"
+msgstr "Inicio"
+
+#: solo/templates/admin/solo/change_form.html:14
+#: solo/templates/admin/solo/object_history.html:9
+msgid "History"
+msgstr "Historial"
+
+#: solo/templates/admin/solo/change_form.html:15
+msgid "View on site"
+msgstr "Ver en el sitio"
+
+#: solo/templatetags/solo_tags.py:22
+#, python-format
+msgid ""
+"Templatetag requires the model dotted path: 'app_label.ModelName'. Received "
+"'%s'."
+msgstr "Templatetag requiere el path del modelo punteado. Recibido '%s'."
+
+#: solo/templatetags/solo_tags.py:28
+#, python-format
+msgid ""
+"Could not get the model name '%(model)s' from the application named '%(app)s'"
+msgstr ""
+"No se pudo obtener el nombre del modelo '%(model)s' de la aplicación llamada "
+"'%(app)s'"
