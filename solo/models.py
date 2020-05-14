@@ -26,11 +26,12 @@ class SingletonModel(models.Model):
         self.clear_cache()
         super(SingletonModel, self).delete(*args, **kwargs)
 
-    def clear_cache(self):
+    @classmethod
+    def clear_cache(cls):
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if cache_name:
             cache = get_cache(cache_name)
-            cache_key = self.get_cache_key()
+            cache_key = cls.get_cache_key()
             cache.delete(cache_key)
 
     def set_to_cache(self):
