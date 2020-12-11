@@ -100,6 +100,13 @@ This is how you run tests:
     ./manage.py test solo --settings=solo.tests.settings
 
 
+
+Supported Languages
+-------------------
+
+- English
+- Spanish
+
 Admin
 -----
 
