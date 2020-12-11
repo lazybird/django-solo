@@ -20,5 +20,6 @@ setup(
     author='lazybird',
     long_description=long_description,
     include_package_data=True,
+    zip_safe=False,
     license='Creative Commons Attribution 3.0 Unported',
 )
