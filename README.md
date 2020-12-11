@@ -239,10 +239,24 @@ SOLO_CACHE_PREFIX = 'solo'
 
 
 Getting the code
-===============
+================
 
 The code is hosted at https://github.com/lazybird/django-solo/
 
 Check out the latest development version anonymously with::
 
     $ git clone git://github.com/lazybird/django-solo.git
+
+You can install the package in the "editable" mode like this :
+
+    pip uninstall django-solo  # just in case...
+    pip install -e git+https://github.com/lazybird/django-solo.git#egg=django-solo
+
+
+You can also install a specific branch :
+
+    pip install -e git+https://github.com/lazybird/django-solo.git@my-branch#egg=django-solo
+
+
+The package is now installed in your project and you can find the code 
+
