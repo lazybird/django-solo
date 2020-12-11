@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-
+import os
 import solo
 
 README = os.path.join(os.path.dirname(__file__), 'README.rst')
