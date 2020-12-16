@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 
 from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
+from solo import settings as solo_settings
 
 try:
     from django.utils.encoding import force_unicode
@@ -23,6 +24,9 @@ class SingletonModelAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super(SingletonModelAdmin, self).get_urls()
+
+        if not solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE:
+            return urls
 
         # _meta.model_name only exists on Django>=1.6 -
         # on earlier versions, use module_name.lower()
@@ -46,6 +50,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
                 {'object_id': str(self.singleton_instance_id)},
                 name='%s_change' % url_name_prefix),
         ]
+
         # By inserting the custom URLs first, we overwrite the standard URLs.
         return custom_urls + urls
 
@@ -61,10 +66,26 @@ class SingletonModelAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         if object_id == str(self.singleton_instance_id):
             self.model.objects.get_or_create(pk=self.singleton_instance_id)
+        
+        if not extra_context:
+            extra_context = dict()
+        extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
+
         return super(SingletonModelAdmin, self).change_view(
             request,
             object_id,
             form_url=form_url,
+            extra_context=extra_context,
+        )
+
+    def history_view(self, request, object_id, extra_context=None):
+        if not extra_context:
+            extra_context = dict()
+        extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
+
+        return super(SingletonModelAdmin, self).history_view(
+            request,
+            object_id,
             extra_context=extra_context,
         )
 

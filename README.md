@@ -120,6 +120,8 @@ Django Solo provides a modified admin for that.
   intermediary object list page.
 * From the edit page, we cannot delete the object (4) nor can we add a new one (5).
 
+If you wish to disable the skipping of the object list page, and have the default
+breadcrumbs, you should set `SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE` to `False` in your settings.
 
 Availability from templates
 ---------------------------
@@ -195,6 +197,16 @@ You can change the name `get_solo` using the
 
 ```python
 GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
+```
+
+### Admin override flag
+
+By default, the admin is overrided. But if you wih to keep the object list
+page (e.g. to customize actions), you can set the `SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE`
+to `False`.
+
+```python
+SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE = True
 ```
 
 ### Cache backend
