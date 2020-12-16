@@ -201,7 +201,7 @@ GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
 
 ### Admin override flag
 
-By default, the admin is overrided. But if you wih to keep the object list
+By default, the admin is overridden. But if you wih to keep the object list
 page (e.g. to customize actions), you can set the `SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE`
 to `False`.
 
