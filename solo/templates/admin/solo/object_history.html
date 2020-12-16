@@ -2,13 +2,14 @@
 {% load i18n %}
 
 {% block breadcrumbs %}
+{% if skip_object_list_page %}
 <div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo; 
-<a href="../../">{{ opts.app_config.verbose_name }}</a> &rsaquo; 
-<a href="../">{{ object|truncatewords:"18" }}</a> &rsaquo; 
-{% trans 'History' %}
-
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo;
+    <a href="../../">{{ opts.app_config.verbose_name }}</a> &rsaquo;
+    <a href="../">{{ object|truncatewords:"18" }}</a> &rsaquo;
+    {% trans 'History' %}
 </div>
+{% else %}
+{{ block.super }}
+{% endif %}
 {% endblock %}
-
-
