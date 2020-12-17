@@ -2,6 +2,8 @@
 Django Solo
 ===========
 
+<a href="https://pypi.org/project/django-solo/" alt="Current version on PyPi"><img src="https://img.shields.io/pypi/v/django-solo.svg" /></a>
+
 
     +---------------------------+
     |                           |
