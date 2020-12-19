@@ -2,6 +2,8 @@
 Django Solo
 ===========
 
+<a href="https://pypi.org/project/django-solo/" alt="Current version on PyPi"><img src="https://img.shields.io/pypi/v/django-solo.svg" /></a>
+
 
     +---------------------------+
     |                           |
@@ -75,7 +77,6 @@ config = SiteConfiguration.objects.get()
 config = SiteConfiguration.get_solo()
 ```
 
-
 In your model, note how you did not have to provide a `verbose_name_plural` field -
 That's because Django Solo uses the `verbose_name` instead.
 
@@ -140,7 +141,6 @@ dotted path:
 {% get_solo 'app_label.ModelName' as my_config %}
 ```
 
-
 Example:
 
 ```django
@@ -149,7 +149,6 @@ Example:
 {{ site_config.site_name }}
 {{ site_config.maintenance_mode }}
 ```
-
 
 If you're extending a template, be sure to use the tag in the proper scope.
 
@@ -194,7 +193,7 @@ The cache backend to be used is controlled via the `SOLO_CACHE` settings.
 Settings
 --------
 
-### Template Tag Name
+### Template tag name
 
 You can retrieve your singleton object in templates using the `get_solo`
 template tag.
@@ -208,7 +207,7 @@ GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
 
 ### Admin override flag
 
-By default, the admin is overridden. But if you wih to keep the object list
+By default, the admin is overridden. But if you wish to keep the object list
 page (e.g. to customize actions), you can set the `SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE`
 to `False`.
 
@@ -236,7 +235,6 @@ CACHES = {
 SOLO_CACHE = 'local'
 ```
 
-
 Caching will be disabled if set to `None`.
 
 
@@ -262,20 +260,17 @@ Getting the code
 
 The code is hosted at https://github.com/lazybird/django-solo/
 
-Check out the latest development version anonymously with::
+Check out the latest development version anonymously with:
 
     $ git clone git://github.com/lazybird/django-solo.git
 
-You can install the package in the "editable" mode like this :
+You can install the package in the "editable" mode like this:
 
     pip uninstall django-solo  # just in case...
     pip install -e git+https://github.com/lazybird/django-solo.git#egg=django-solo
 
-
-You can also install a specific branch :
+You can also install a specific branch:
 
     pip install -e git+https://github.com/lazybird/django-solo.git@my-branch#egg=django-solo
 
-
-The package is now installed in your project and you can find the code 
-
+The package is now installed in your project and you can find the code.
