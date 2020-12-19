@@ -1,3 +1,20 @@
+django-solo-1.1.4
+=================
+
+Date: 19 December, 2020
+
+* Now using the same README file github and pypi
+* Add pypi badge in Readme
+* Add a flag to allow not skipping the admin list page
+* Set the zip_safe option to False
+* refactor clear_cache into a classmethod
+* Added Spanish locale.
+* Missing import os added
+* update change_form for newer versions of Django
+
+
+* * *
+
 django-solo-1.1.3
 =================
 
