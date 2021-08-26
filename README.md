@@ -68,7 +68,9 @@ from solo.admin import SingletonModelAdmin
 from config.models import SiteConfiguration
 
 admin.site.register(SiteConfiguration, SingletonModelAdmin)
+```
 
+```python
 # There is only one item in the table, you can get it this way:
 from .models import SiteConfiguration
 config = SiteConfiguration.objects.get()
