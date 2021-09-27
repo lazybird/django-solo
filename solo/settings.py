@@ -14,3 +14,4 @@ SOLO_CACHE = None
 SOLO_CACHE_TIMEOUT = 60*5
 
 SOLO_CACHE_PREFIX = 'solo'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

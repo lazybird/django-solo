@@ -7,7 +7,7 @@ class SiteConfiguration(SingletonModel):
     site_name = models.CharField(max_length=255, default='Site Name')
     maintenance_mode = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"Site Configuration"
 
     class Meta:
