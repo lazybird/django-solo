@@ -19,7 +19,7 @@ setup(
     packages=find_packages(),
     url='http://github.com/lazybird/django-solo/',
     author='lazybird',
-    long_description=long_description,
+    long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     include_package_data=True,
     zip_safe=False,

@@ -49,6 +49,7 @@ Usage Example
 from django.db import models
 from solo.models import SingletonModel
 
+
 class SiteConfiguration(SingletonModel):
     site_name = models.CharField(max_length=255, default='Site Name')
     maintenance_mode = models.BooleanField(default=False)
@@ -66,6 +67,7 @@ class SiteConfiguration(SingletonModel):
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
 from config.models import SiteConfiguration
+
 
 admin.site.register(SiteConfiguration, SingletonModelAdmin)
 ```
