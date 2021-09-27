@@ -3,7 +3,7 @@
 import django
 
 
-__version__ = '1.1.5'
+__version__ = '1.2.0'
 __doc__ = 'Django Solo helps working with singletons'
 
 if django.VERSION < (3, 2):
