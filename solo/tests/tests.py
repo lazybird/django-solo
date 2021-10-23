@@ -102,4 +102,4 @@ class SingletonWithExplicitIdTest(TestCase):
 
     def test_when_singleton_instance_id_is_given_created_item_will_have_given_instance_id(self):
         item = SiteConfigurationWithExplicitlyGivenId.get_solo()
-        self.assertEquals(item.pk, SiteConfigurationWithExplicitlyGivenId.singleton_instance_id)
+        self.assertEqual(item.pk, SiteConfigurationWithExplicitlyGivenId.singleton_instance_id)
