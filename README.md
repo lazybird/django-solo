@@ -104,7 +104,12 @@ This is how you run tests:
 
     ./manage.py test solo --settings=solo.tests.settings
 
+And from within `tox`:
 
+```
+python -m pip install tox
+tox
+```
 
 Supported Languages
 -------------------

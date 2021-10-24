@@ -16,6 +16,7 @@ setup(
     name='django-solo',
     version=solo.__version__,
     description=solo.__doc__,
+    python_requires=">=3.6",
     packages=find_packages(),
     url='http://github.com/lazybird/django-solo/',
     author='lazybird',

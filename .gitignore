@@ -1,0 +1,8 @@
+*.egg-info
+.tox
+.idea
+__pycache__
+*.pyc
+venv
+dist
+files
