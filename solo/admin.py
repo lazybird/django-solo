@@ -6,12 +6,12 @@ from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 from solo import settings as solo_settings
 
 try:
-    from django.utils.encoding import force_unicode
+    from django.utils.encoding import force_unicode  # Django 2.x
 except ImportError:
     try:
-        from django.utils.encoding import force_text as force_unicode  # django 3.x
+        from django.utils.encoding import force_text as force_unicode  # Django 3.x
     except ImportError:
-        from django.utils.encoding import force_str as force_unicode  # django 4.x
+        from django.utils.encoding import force_str as force_unicode  # Django 4.x
 
 from django.utils.translation import ugettext as _
 
