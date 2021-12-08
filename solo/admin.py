@@ -8,8 +8,14 @@ from solo import settings as solo_settings
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_text as force_unicode
-from django.utils.translation import ugettext as _
+    try:
+        from django.utils.encoding import force_text as force_unicode
+    except:
+        from django.utils.encoding import force_str as force_unicode
+try:
+    from django.utils.translation import ugettext as _
+except ImportError:
+    from django.utils.translation import gettext as _
 
 
 class SingletonModelAdmin(admin.ModelAdmin):

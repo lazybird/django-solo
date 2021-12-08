@@ -1,6 +1,8 @@
 from django import template
-from django.utils.translation import ugettext as _
-
+try:
+    from django.utils.translation import ugettext as _
+except ImportError:
+    from django.utils.translation import gettext as _
 from solo import settings as solo_settings
 
 try:
