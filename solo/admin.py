@@ -8,7 +8,11 @@ from solo import settings as solo_settings
 try:
     from django.utils.encoding import force_unicode
 except ImportError:
-    from django.utils.encoding import force_text as force_unicode
+    try:
+        from django.utils.encoding import force_text as force_unicode  # django 3.x
+    except ImportError:
+        from django.utils.encoding import force_str as force_unicode  # django 4.x
+
 from django.utils.translation import ugettext as _
 
 
@@ -36,42 +40,44 @@ class SingletonModelAdmin(admin.ModelAdmin):
             model_name = self.model._meta.module_name.lower()
 
         self.model._meta.verbose_name_plural = self.model._meta.verbose_name
-        url_name_prefix = '%(app_name)s_%(model_name)s' % {
-            'app_name': self.model._meta.app_label,
-            'model_name': model_name,
+        url_name_prefix = "%(app_name)s_%(model_name)s" % {
+            "app_name": self.model._meta.app_label,
+            "model_name": model_name,
         }
         custom_urls = [
-            re_path(r'^history/$',
-                    self.admin_site.admin_view(self.history_view),
-                    {'object_id': str(self.singleton_instance_id)},
-                    name='%s_history' % url_name_prefix),
-            re_path(r'^$',
-                    self.admin_site.admin_view(self.change_view),
-                    {'object_id': str(self.singleton_instance_id)},
-                    name='%s_change' % url_name_prefix),
+            re_path(
+                r"^history/$",
+                self.admin_site.admin_view(self.history_view),
+                {"object_id": str(self.singleton_instance_id)},
+                name="%s_history" % url_name_prefix,
+            ),
+            re_path(
+                r"^$",
+                self.admin_site.admin_view(self.change_view),
+                {"object_id": str(self.singleton_instance_id)},
+                name="%s_change" % url_name_prefix,
+            ),
         ]
 
         # By inserting the custom URLs first, we overwrite the standard URLs.
         return custom_urls + urls
 
     def response_change(self, request, obj):
-        msg = _('%(obj)s was changed successfully.') % {
-            'obj': force_unicode(obj)}
-        if '_continue' in request.POST:
-            self.message_user(request, msg + ' ' +
-                              _('You may edit it again below.'))
+        msg = _("%(obj)s was changed successfully.") % {"obj": force_unicode(obj)}
+        if "_continue" in request.POST:
+            self.message_user(request, msg + " " + _("You may edit it again below."))
             return HttpResponseRedirect(request.path)
         else:
             self.message_user(request, msg)
             return HttpResponseRedirect("../../")
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         if object_id == str(self.singleton_instance_id):
             self.model.objects.get_or_create(pk=self.singleton_instance_id)
 
         if not extra_context:
             extra_context = dict()
-        extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
+        extra_context["skip_object_list_page"] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
         return super(SingletonModelAdmin, self).change_view(
             request,
@@ -83,7 +89,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
     def history_view(self, request, object_id, extra_context=None):
         if not extra_context:
             extra_context = dict()
-        extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
+        extra_context["skip_object_list_page"] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
         return super(SingletonModelAdmin, self).history_view(
             request,
@@ -93,4 +99,4 @@ class SingletonModelAdmin(admin.ModelAdmin):
 
     @property
     def singleton_instance_id(self):
-        return getattr(self.model, 'singleton_instance_id', DEFAULT_SINGLETON_INSTANCE_ID)
+        return getattr(self.model, "singleton_instance_id", DEFAULT_SINGLETON_INSTANCE_ID)
