@@ -263,7 +263,6 @@ The prefix to use for the cache key.
 SOLO_CACHE_PREFIX = 'solo'
 ```
 
-
 Getting the code
 ================
 
@@ -283,3 +282,8 @@ You can also install a specific branch:
     pip install -e git+https://github.com/lazybird/django-solo.git@my-branch#egg=django-solo
 
 The package is now installed in your project and you can find the code.
+
+To run the unit tests:
+
+    pip install tox
+    tox
