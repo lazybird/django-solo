@@ -1,7 +1,7 @@
-from setuptools import setup, find_packages
 import os
-import solo
+import re
 
+from setuptools import setup, find_packages
 
 README = os.path.join(os.path.dirname(__file__), 'README.md')
 
@@ -12,10 +12,22 @@ try:
 except Exception:
     long_description = ''
 
+
+def get_version(package):
+    """
+    Return package version as listed in `__version__` in `__init__.py`.
+    """
+    with open(os.path.join(package, '__init__.py')) as file:
+        init_py = file.read()
+    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+
+
+version = get_version('solo')
+
 setup(
     name='django-solo',
-    version=solo.__version__,
-    description=solo.__doc__,
+    version=version,
+    description='Django Solo helps working with singletons',
     python_requires='>=3.6',
     packages=find_packages(),
     url='https://github.com/lazybird/django-solo/',
