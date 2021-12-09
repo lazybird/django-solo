@@ -29,6 +29,7 @@ setup(
     version=version,
     description='Django Solo helps working with singletons',
     python_requires='>=3.6',
+    install_requires=['django>=2.2'],
     packages=find_packages(),
     url='https://github.com/lazybird/django-solo/',
     author='lazybird',
