@@ -16,6 +16,7 @@ setup(
     name='django-solo',
     version=solo.__version__,
     description=solo.__doc__,
+    python_requires='>=3.6',
     packages=find_packages(),
     url='https://github.com/lazybird/django-solo/',
     author='lazybird',
@@ -24,4 +25,18 @@ setup(
     include_package_data=True,
     zip_safe=False,
     license='Creative Commons Attribution 3.0 Unported',
+    classifiers=[
+        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+    ]
 )

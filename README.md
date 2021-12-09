@@ -95,7 +95,7 @@ class SiteConfiguration(SingletonModel):
 Installation
 ------------
 
-This application requires Django >= 1.6.
+This application requires Django 2.2, 3.1, or 3.2.
 
 * Install the package using `pip install django-solo`
 * Add ``solo`` or ``solo.apps.SoloAppConfig`` to your ``INSTALLED_APPS`` setting.
@@ -104,7 +104,12 @@ This is how you run tests:
 
     ./manage.py test solo --settings=solo.tests.settings
 
+And from within `tox`:
 
+```
+python -m pip install tox
+tox
+```
 
 Supported Languages
 -------------------
@@ -258,7 +263,6 @@ The prefix to use for the cache key.
 SOLO_CACHE_PREFIX = 'solo'
 ```
 
-
 Getting the code
 ================
 
@@ -278,3 +282,8 @@ You can also install a specific branch:
     pip install -e git+https://github.com/lazybird/django-solo.git@my-branch#egg=django-solo
 
 The package is now installed in your project and you can find the code.
+
+To run the unit tests:
+
+    pip install tox
+    tox
