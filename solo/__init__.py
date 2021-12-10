@@ -4,7 +4,6 @@ import django
 
 
 __version__ = '1.2.0'
-__doc__ = 'Django Solo helps working with singletons'
 
 if django.VERSION < (3, 2):
     default_app_config = 'solo.apps.SoloAppConfig'

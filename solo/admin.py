@@ -1,15 +1,11 @@
 from django.urls import re_path
 from django.contrib import admin
 from django.http import HttpResponseRedirect
+from django.utils.encoding import force_str
+from django.utils.translation import gettext as _
 
 from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 from solo import settings as solo_settings
-
-try:
-    from django.utils.encoding import force_unicode
-except ImportError:
-    from django.utils.encoding import force_text as force_unicode
-from django.utils.translation import ugettext as _
 
 
 class SingletonModelAdmin(admin.ModelAdmin):
@@ -56,7 +52,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
 
     def response_change(self, request, obj):
         msg = _('%(obj)s was changed successfully.') % {
-            'obj': force_unicode(obj)}
+            'obj': force_str(obj)}
         if '_continue' in request.POST:
             self.message_user(request, msg + ' ' +
                               _('You may edit it again below.'))
