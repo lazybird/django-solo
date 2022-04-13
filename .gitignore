@@ -6,3 +6,5 @@ __pycache__
 venv
 dist
 files
+
+.DS_STORE

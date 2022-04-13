@@ -116,6 +116,7 @@ Supported Languages
 
 - English
 - Spanish
+- German
 
 Admin
 -----
