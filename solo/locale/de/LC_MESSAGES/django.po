@@ -1,0 +1,56 @@
+# German translation for django-solo.
+# Copyright (C) 2022
+# This file is distributed under the same license as the django-solo package.
+# Conrad <grosserconrad@gmail.com>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-13 16:13+0200\n"
+"PO-Revision-Date: 2008-11-30 12:12\n"
+"Last-Translator: <grosserconrad@gmail.com>\n"
+"Language-Team: de\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Translated-Using: django-rosetta 0.9.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: solo/admin.py:53
+#, python-format
+msgid "%(obj)s was changed successfully."
+msgstr "%(obj)s wurde erfolgreich geändert."
+
+#: solo/admin.py:55
+msgid "You may edit it again below."
+msgstr "Sie können dies erneut anpassen."
+
+#: solo/templates/admin/solo/change_form.html:7
+#: solo/templates/admin/solo/object_history.html:6
+msgid "Home"
+msgstr "Home"
+
+#: solo/templates/admin/solo/change_form.html:14
+#: solo/templates/admin/solo/object_history.html:9
+msgid "History"
+msgstr "Verlauf"
+
+#: solo/templates/admin/solo/change_form.html:15
+msgid "View on site"
+msgstr "Auf der Seite anzeigen"
+
+#: solo/templatetags/solo_tags.py:22
+#, python-format
+msgid ""
+"Templatetag requires the model dotted path: 'app_label.ModelName'. Received "
+"'%s'."
+msgstr "Templatetag kann '%s' nicht verarbeiten. Model wird in der 'dotted path'-Schreibweise benötigt (Beispiel: 'app_label.ModelName')."
+
+#: solo/templatetags/solo_tags.py:28
+#, python-format
+msgid ""
+"Could not get the model name '%(model)s' from the application named '%(app)s'"
+msgstr ""
+"Model '%(model)s' konnte nicht in Applikation '%(app)s' gefunden werden."
