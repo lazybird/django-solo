@@ -2,7 +2,7 @@ from django.urls import re_path
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.utils.encoding import force_str
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 from solo import settings as solo_settings
@@ -19,15 +19,14 @@ class SingletonModelAdmin(admin.ModelAdmin):
         return False
 
     def get_urls(self):
-        urls = super(SingletonModelAdmin, self).get_urls()
-
+        urls = super(self.__class__, self).get_urls()
         if not solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE:
             return urls
 
         # _meta.model_name only exists on Django>=1.6 -
         # on earlier versions, use module_name.lower()
         try:
-            model_name = self.model._meta.model_name
+            model_name = gettext_lazy.model._meta.model_name
         except AttributeError:
             model_name = self.model._meta.module_name.lower()
 
@@ -69,7 +68,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
             extra_context = dict()
         extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
-        return super(SingletonModelAdmin, self).change_view(
+        return super(self.__class__, self).change_view(
             request,
             object_id,
             form_url=form_url,
@@ -81,7 +80,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
             extra_context = dict()
         extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
-        return super(SingletonModelAdmin, self).history_view(
+        return super(self.__class__, self).history_view(
             request,
             object_id,
             extra_context=extra_context,
