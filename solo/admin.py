@@ -26,7 +26,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
         # _meta.model_name only exists on Django>=1.6 -
         # on earlier versions, use module_name.lower()
         try:
-            model_name = gettext_lazy.model._meta.model_name
+            model_name = self.model._meta.model_name
         except AttributeError:
             model_name = self.model._meta.module_name.lower()
 
