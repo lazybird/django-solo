@@ -1,3 +1,13 @@
+django-solo-2.1.0
+=================
+
+Date: Unreleased
+
+* Add support for Django 4.1
+* Drop support for end of life Django 2.2
+* Add support for Python 3.11
+* Drop support for end of life Python 3.6
+
 django-solo-2.0.0
 =================
 
