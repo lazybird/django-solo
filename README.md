@@ -288,3 +288,15 @@ To run the unit tests:
 
     pip install tox
     tox
+
+### Making a release
+
+1. Update [`solo/__init__.py`](solo/__init__.py) `version`
+
+```shell
+tox -e build
+```
+
+```shell
+tox -e upload
+```
