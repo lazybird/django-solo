@@ -293,6 +293,8 @@ To run the unit tests:
 
 1. Update [`solo/__init__.py`](solo/__init__.py) `version`
 
+2. Make a new release on GitHub
+
 ```shell
 tox -e build
 ```
