@@ -1,0 +1,57 @@
+# Indonesian translation for django-solo.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the django-solo package.
+# Kira <kiraware@github.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-07-23 09:06+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kira <kiraware@github.com>\n"
+"Language-Team: id <LL@li.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\solo\admin.py:54
+#, python-format
+msgid "%(obj)s was changed successfully."
+msgstr "%(obj)s berhasil diubah."
+
+#: .\solo\admin.py:58
+msgid "You may edit it again below."
+msgstr "Anda dapat mengeditnya lagi di bawah ini."
+
+#: .\solo\templates\admin\solo\change_form.html:8
+#: .\solo\templates\admin\solo\object_history.html:7
+msgid "Home"
+msgstr "Beranda"
+
+#: .\solo\templates\admin\solo\change_form.html:18
+#: .\solo\templates\admin\solo\object_history.html:10
+msgid "History"
+msgstr "Riwayat"
+
+#: .\solo\templates\admin\solo\change_form.html:20
+msgid "View on site"
+msgstr "Lihat di situs"
+
+#: .\solo\templatetags\solo_tags.py:22
+#, python-format
+msgid ""
+"Templatetag requires the model dotted path: 'app_label.ModelName'. Received "
+"'%s'."
+msgstr ""
+"Templatetag memerlukan model dotted path: 'app_label.ModelName'. Menerima "
+"'%s'."
+
+#: .\solo\templatetags\solo_tags.py:28
+#, python-format
+msgid ""
+"Could not get the model name '%(model)s' from the application named '%(app)s'"
+msgstr ""
+"Tidak bisa mendapatkan nama model '%(model)s' dari aplikasi bernama '%(app)s'"
