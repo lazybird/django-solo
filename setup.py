@@ -28,7 +28,7 @@ setup(
     name='django-solo',
     version=version,
     description='Django Solo helps working with singletons',
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=['django>=3.2'],
     packages=find_packages(),
     url='https://github.com/lazybird/django-solo/',
@@ -47,10 +47,10 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ]
 )
