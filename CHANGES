@@ -3,6 +3,7 @@ Unreleased
 
 * Add support for Python 3.12
 * Drop support for Python 3.7
+* Add support for Django 5.0
 
 django-solo-2.1.0
 =================
