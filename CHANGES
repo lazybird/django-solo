@@ -1,5 +1,7 @@
-Unreleased
-==========
+django-solo-2.2.0
+=================
+
+Date: 1 January, 2024
 
 * Add support for Python 3.12
 * Drop support for Python 3.7
