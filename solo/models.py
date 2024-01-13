@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.forms import model_to_dict
 
 try:
     from django.core.cache import caches
@@ -41,7 +42,8 @@ class SingletonModel(models.Model):
         cache = get_cache(cache_name)
         cache_key = self.get_cache_key()
         timeout = getattr(settings, 'SOLO_CACHE_TIMEOUT', solo_settings.SOLO_CACHE_TIMEOUT)
-        cache.set(cache_key, self, timeout)
+        cache_value = model_to_dict(self)
+        cache.set(cache_key, cache_value, timeout)
 
     @classmethod
     def get_cache_key(cls):
@@ -56,8 +58,9 @@ class SingletonModel(models.Model):
             return obj
         cache = get_cache(cache_name)
         cache_key = cls.get_cache_key()
-        obj = cache.get(cache_key)
-        if not obj:
+        cache_value = cache.get(cache_key)
+        if not cache_value:
             obj, created = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
-        return obj
+            return obj
+        return cls(**cache_value)
