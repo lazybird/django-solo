@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, TypeVar
+import sys
+from typing import Any
 
 from django.conf import settings
 from django.core.cache import caches
@@ -8,9 +9,13 @@ from django.db import models
 
 from solo import settings as solo_settings
 
-DEFAULT_SINGLETON_INSTANCE_ID = 1
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
-Self = TypeVar("Self", bound="SingletonModel")
+
+DEFAULT_SINGLETON_INSTANCE_ID = 1
 
 
 class SingletonModel(models.Model):
@@ -51,7 +56,7 @@ class SingletonModel(models.Model):
         return '%s:%s' % (prefix, cls.__name__.lower())
 
     @classmethod
-    def get_solo(cls: type[Self]) -> Self:
+    def get_solo(cls) -> Self:
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if not cache_name:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
