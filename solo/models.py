@@ -1,13 +1,10 @@
-from typing import Type, TypeVar
+from __future__ import annotations
+
+from typing import Any, TypeVar
 
 from django.conf import settings
+from django.core.cache import caches
 from django.db import models
-
-try:
-    from django.core.cache import caches
-    get_cache = lambda cache_name: caches[cache_name]
-except ImportError:
-    from django.core.cache import get_cache
 
 from solo import settings as solo_settings
 
@@ -22,47 +19,47 @@ class SingletonModel(models.Model):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.pk = self.singleton_instance_id
-        super(SingletonModel, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
         self.set_to_cache()
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
         self.clear_cache()
-        super(SingletonModel, self).delete(*args, **kwargs)
+        return super().delete(*args, **kwargs)
 
     @classmethod
-    def clear_cache(cls):
+    def clear_cache(cls) -> None:
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if cache_name:
-            cache = get_cache(cache_name)
+            cache = caches[cache_name]
             cache_key = cls.get_cache_key()
             cache.delete(cache_key)
 
-    def set_to_cache(self):
+    def set_to_cache(self) -> None:
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if not cache_name:
             return None
-        cache = get_cache(cache_name)
+        cache = caches[cache_name]
         cache_key = self.get_cache_key()
         timeout = getattr(settings, 'SOLO_CACHE_TIMEOUT', solo_settings.SOLO_CACHE_TIMEOUT)
         cache.set(cache_key, self, timeout)
 
     @classmethod
-    def get_cache_key(cls):
+    def get_cache_key(cls) -> str:
         prefix = getattr(settings, 'SOLO_CACHE_PREFIX', solo_settings.SOLO_CACHE_PREFIX)
         return '%s:%s' % (prefix, cls.__name__.lower())
 
     @classmethod
-    def get_solo(cls: Type[Self]) -> Self:
+    def get_solo(cls: type[Self]) -> Self:
         cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
         if not cache_name:
-            obj, created = cls.objects.get_or_create(pk=cls.singleton_instance_id)
-            return obj
-        cache = get_cache(cache_name)
+            obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
+            return obj  # type: ignore[return-value]
+        cache = caches[cache_name]
         cache_key = cls.get_cache_key()
         obj = cache.get(cache_key)
         if not obj:
-            obj, created = cls.objects.get_or_create(pk=cls.singleton_instance_id)
+            obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
-        return obj
+        return obj  # type: ignore[return-value]

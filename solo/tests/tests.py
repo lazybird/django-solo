@@ -1,9 +1,9 @@
+from django.core.cache import caches
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import Template, Context
 from django.test import TestCase
 
 from django.test.utils import override_settings
-from solo.models import get_cache
 from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
 
 
@@ -16,7 +16,7 @@ class SingletonTest(TestCase):
             '{{ site_config.site_name }}'
             '{{ site_config.file.url }}'
         )
-        self.cache = get_cache('default')
+        self.cache = caches['default']
         self.cache_key = SiteConfiguration.get_cache_key()
         self.cache.clear()
         SiteConfiguration.objects.all().delete()
