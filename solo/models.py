@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import sys
+import warnings
 from typing import Any
 
 from django.conf import settings
-from django.core.cache import caches
+from django.core.cache import BaseCache, caches
 from django.db import models
 
 from solo import settings as solo_settings
@@ -16,6 +17,16 @@ else:
 
 
 DEFAULT_SINGLETON_INSTANCE_ID = 1
+
+
+def get_cache(cache_name: str) -> BaseCache:
+    warnings.warn(
+        DeprecationWarning,
+        "'get_cache' is deprecated and will be removed in django-solo 2.3.0. "
+        "Instead, use 'caches' from 'django.core.cache'.",
+        stacklevel=2,
+    )
+    return caches[cache_name]
 
 
 class SingletonModel(models.Model):
