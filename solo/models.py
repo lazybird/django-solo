@@ -26,7 +26,7 @@ def get_cache(cache_name: str) -> BaseCache:
         DeprecationWarning,
         stacklevel=2,
     )
-    return caches[cache_name]
+    return caches[cache_name]  # type: ignore[no-any-return]  # mypy bug, unable to get a MRE
 
 
 class SingletonModel(models.Model):
