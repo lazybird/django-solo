@@ -1,3 +1,9 @@
+Unreleased
+==========
+
+* Add typing support
+* Deprecate `solo.models.get_cache`
+
 django-solo-2.2.0
 =================
 

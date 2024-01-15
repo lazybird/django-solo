@@ -1,6 +1,11 @@
-from django.urls import re_path
+from __future__ import annotations
+
+from typing import Any
+
+from django.db.models import Model
+from django.urls import URLPattern, re_path
 from django.contrib import admin
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils.encoding import force_str
 from django.utils.translation import gettext as _
 
@@ -8,18 +13,18 @@ from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 from solo import settings as solo_settings
 
 
-class SingletonModelAdmin(admin.ModelAdmin):
+class SingletonModelAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
     object_history_template = "admin/solo/object_history.html"
     change_form_template = "admin/solo/change_form.html"
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
-    def has_delete_permission(self, request, obj=None):
+    def has_delete_permission(self, request: HttpRequest, obj: Model | None = None) -> bool:
         return False
 
-    def get_urls(self):
-        urls = super(SingletonModelAdmin, self).get_urls()
+    def get_urls(self) -> list[URLPattern]:
+        urls = super().get_urls()
 
         if not solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE:
             return urls
@@ -50,7 +55,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
         # By inserting the custom URLs first, we overwrite the standard URLs.
         return custom_urls + urls
 
-    def response_change(self, request, obj):
+    def response_change(self, request: HttpRequest, obj: Model) -> HttpResponseRedirect:
         msg = _('%(obj)s was changed successfully.') % {
             'obj': force_str(obj)}
         if '_continue' in request.POST:
@@ -61,7 +66,7 @@ class SingletonModelAdmin(admin.ModelAdmin):
             self.message_user(request, msg)
             return HttpResponseRedirect("../../")
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
+    def change_view(self, request: HttpRequest, object_id: str, form_url: str = '', extra_context: dict[str, Any] | None = None) -> HttpResponse:
         if object_id == str(self.singleton_instance_id):
             self.model.objects.get_or_create(pk=self.singleton_instance_id)
 
@@ -69,24 +74,24 @@ class SingletonModelAdmin(admin.ModelAdmin):
             extra_context = dict()
         extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
-        return super(SingletonModelAdmin, self).change_view(
+        return super().change_view(
             request,
             object_id,
             form_url=form_url,
             extra_context=extra_context,
         )
 
-    def history_view(self, request, object_id, extra_context=None):
+    def history_view(self, request: HttpRequest, object_id: str, extra_context: dict[str, Any] | None = None) -> HttpResponse:
         if not extra_context:
             extra_context = dict()
         extra_context['skip_object_list_page'] = solo_settings.SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE
 
-        return super(SingletonModelAdmin, self).history_view(
+        return super().history_view(
             request,
             object_id,
             extra_context=extra_context,
         )
 
     @property
-    def singleton_instance_id(self):
+    def singleton_instance_id(self) -> int:
         return getattr(self.model, 'singleton_instance_id', DEFAULT_SINGLETON_INSTANCE_ID)
