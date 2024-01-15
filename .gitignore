@@ -6,5 +6,6 @@ __pycache__
 venv
 dist
 files
+.mypy_cache
 
 .DS_STORE
