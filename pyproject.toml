@@ -63,3 +63,7 @@ select = [
     "SIM", # flake8-simplify
     "TID", # flake8-tidy-imports
 ]
+
+ignore = [
+    "B904",
+]

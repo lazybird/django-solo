@@ -46,29 +46,29 @@ class SingletonModel(models.Model):
 
     @classmethod
     def clear_cache(cls) -> None:
-        cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
+        cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
         if cache_name:
             cache = caches[cache_name]
             cache_key = cls.get_cache_key()
             cache.delete(cache_key)
 
     def set_to_cache(self) -> None:
-        cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
+        cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
         if not cache_name:
             return None
         cache = caches[cache_name]
         cache_key = self.get_cache_key()
-        timeout = getattr(settings, 'SOLO_CACHE_TIMEOUT', solo_settings.SOLO_CACHE_TIMEOUT)
+        timeout = getattr(settings, "SOLO_CACHE_TIMEOUT", solo_settings.SOLO_CACHE_TIMEOUT)
         cache.set(cache_key, self, timeout)
 
     @classmethod
     def get_cache_key(cls) -> str:
-        prefix = getattr(settings, 'SOLO_CACHE_PREFIX', solo_settings.SOLO_CACHE_PREFIX)
-        return '%s:%s' % (prefix, cls.__name__.lower())
+        prefix = getattr(settings, "SOLO_CACHE_PREFIX", solo_settings.SOLO_CACHE_PREFIX)
+        return f"{prefix}:{cls.__name__.lower()}"
 
     @classmethod
     def get_solo(cls) -> Self:
-        cache_name = getattr(settings, 'SOLO_CACHE', solo_settings.SOLO_CACHE)
+        cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
         if not cache_name:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             return obj  # type: ignore[return-value]
