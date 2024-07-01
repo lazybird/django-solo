@@ -3,6 +3,8 @@ Unreleased
 
 * Add typing support
 * Deprecate `solo.models.get_cache`
+* Switch to `pyproject.toml`
+* Switch to Ruff for formatting and linting
 
 django-solo-2.2.0
 =================
