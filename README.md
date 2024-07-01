@@ -293,7 +293,11 @@ To run the unit tests:
 
 1. Update [`solo/__init__.py`](solo/__init__.py) `version`
 
-2. Make a new release on GitHub
+2. Update [`CHANGES`](./CHANGES)
+
+3. Make a new release on GitHub
+
+4. Upload release to PyPI
 
 ```shell
 tox -e build

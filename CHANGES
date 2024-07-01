@@ -1,6 +1,11 @@
 Unreleased
 ==========
 
+django-solo-2.3.0
+=================
+
+Date: 1 July, 2024
+
 * Add typing support
 * Deprecate `solo.models.get_cache`
 * Switch to `pyproject.toml`
