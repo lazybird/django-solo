@@ -19,8 +19,9 @@ def get_solo(model_path: str) -> SingletonModel:
                 "Received '{model_path}'."
             ).format(model_path=model_path)
         )
-    model_class: type[SingletonModel] = apps.get_model(app_label, model_name)
-    if not model_class:
+    try:
+        model_class: type[SingletonModel] = apps.get_model(app_label, model_name)
+    except LookupError:
         raise template.TemplateSyntaxError(
             _("Could not get the model name '{model}' from the application named '{app}'").format(
                 model=model_name, app=app_label
