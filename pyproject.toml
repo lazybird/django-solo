@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-solo"
+description = "Django Solo helps working with singletons"
+authors = [{name = "lazybird"}]
+maintainers = [
+    {name = "John Hagen", email = "johnthagen@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "django>=3.2",
+    "typing-extensions>=4.0.1; python_version < '3.11'",
+]
+license = {text = "Creative Commons Attribution 3.0 Unported"}
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "solo.__version__"}
+
+[project.urls]
+Homepage = "https://github.com/lazybird/django-solo/"
+Source = "https://github.com/lazybird/django-solo/"
+Changelog = "https://github.com/lazybird/django-solo/blob/master/CHANGES"
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true
+exclude = "solo/tests"
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "F", # pyflakes
+    "E", # pycodestyle
+    "I", # isort
+    "N", # pep8-naming
+    "UP", # pyupgrade
+    "RUF", # ruff
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "PTH", # flake8-use-pathlib
+    "SIM", # flake8-simplify
+    "TID", # flake8-tidy-imports
+]
+
+ignore = [
+    "B904",
+]

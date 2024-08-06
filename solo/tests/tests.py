@@ -1,22 +1,21 @@
+from django.core.cache import caches
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.template import Template, Context
+from django.template import Context, Template
 from django.test import TestCase
-
 from django.test.utils import override_settings
-from solo.models import get_cache
+
 from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
 
 
 class SingletonTest(TestCase):
-
     def setUp(self):
         self.template = Template(
-            '{% load solo_tags %}'
+            "{% load solo_tags %}"
             '{% get_solo "tests.SiteConfiguration" as site_config  %}'
-            '{{ site_config.site_name }}'
-            '{{ site_config.file.url }}'
+            "{{ site_config.site_name }}"
+            "{{ site_config.file.url }}"
         )
-        self.cache = get_cache('default')
+        self.cache = caches["default"]
         self.cache_key = SiteConfiguration.get_cache_key()
         self.cache.clear()
         SiteConfiguration.objects.all().delete()
@@ -27,40 +26,40 @@ class SingletonTest(TestCase):
         # one to be created automatically with the default name value as
         # defined in models.
         output = self.template.render(Context())
-        self.assertIn('Default Config', output)
+        self.assertIn("Default Config", output)
 
     def test_template_tag_renders_site_config(self):
-        SiteConfiguration.objects.create(site_name='Test Config')
+        SiteConfiguration.objects.create(site_name="Test Config")
         output = self.template.render(Context())
-        self.assertIn('Test Config', output)
+        self.assertIn("Test Config", output)
 
-    @override_settings(SOLO_CACHE='default')
+    @override_settings(SOLO_CACHE="default")
     def test_template_tag_uses_cache_if_enabled(self):
-        SiteConfiguration.objects.create(site_name='Config In Database')
-        fake_configuration = {'site_name': 'Config In Cache'}
+        SiteConfiguration.objects.create(site_name="Config In Database")
+        fake_configuration = {"site_name": "Config In Cache"}
         self.cache.set(self.cache_key, fake_configuration, 10)
         output = self.template.render(Context())
-        self.assertNotIn('Config In Database', output)
-        self.assertNotIn('Default Config', output)
-        self.assertIn('Config In Cache', output)
+        self.assertNotIn("Config In Database", output)
+        self.assertNotIn("Default Config", output)
+        self.assertIn("Config In Cache", output)
 
     @override_settings(SOLO_CACHE=None)
     def test_template_tag_uses_database_if_cache_disabled(self):
-        SiteConfiguration.objects.create(site_name='Config In Database')
-        fake_configuration = {'site_name': 'Config In Cache'}
+        SiteConfiguration.objects.create(site_name="Config In Database")
+        fake_configuration = {"site_name": "Config In Cache"}
         self.cache.set(self.cache_key, fake_configuration, 10)
         output = self.template.render(Context())
-        self.assertNotIn('Config In Cache', output)
-        self.assertNotIn('Default Config', output)
-        self.assertIn('Config In Database', output)
+        self.assertNotIn("Config In Cache", output)
+        self.assertNotIn("Default Config", output)
+        self.assertIn("Config In Database", output)
 
-    @override_settings(SOLO_CACHE='default')
+    @override_settings(SOLO_CACHE="default")
     def test_delete_if_cache_enabled(self):
         self.assertEqual(SiteConfiguration.objects.count(), 0)
         self.assertIsNone(self.cache.get(self.cache_key))
 
         one_cfg = SiteConfiguration.get_solo()
-        one_cfg.site_name = 'TEST SITE PLEASE IGNORE'
+        one_cfg.site_name = "TEST SITE PLEASE IGNORE"
         one_cfg.save()
         self.assertEqual(SiteConfiguration.objects.count(), 1)
         self.assertIsNotNone(self.cache.get(self.cache_key))
@@ -68,35 +67,36 @@ class SingletonTest(TestCase):
         one_cfg.delete()
         self.assertEqual(SiteConfiguration.objects.count(), 0)
         self.assertIsNone(self.cache.get(self.cache_key))
-        self.assertEqual(SiteConfiguration.get_solo().site_name, 'Default Config')
+        self.assertEqual(SiteConfiguration.get_solo().site_name, "Default Config")
 
     @override_settings(SOLO_CACHE=None)
     def test_delete_if_cache_disabled(self):
         # As above, but without the cache checks
         self.assertEqual(SiteConfiguration.objects.count(), 0)
         one_cfg = SiteConfiguration.get_solo()
-        one_cfg.site_name = 'TEST (uncached) SITE PLEASE IGNORE'
+        one_cfg.site_name = "TEST (uncached) SITE PLEASE IGNORE"
         one_cfg.save()
         self.assertEqual(SiteConfiguration.objects.count(), 1)
         one_cfg.delete()
         self.assertEqual(SiteConfiguration.objects.count(), 0)
-        self.assertEqual(SiteConfiguration.get_solo().site_name, 'Default Config')
+        self.assertEqual(SiteConfiguration.get_solo().site_name, "Default Config")
 
-    @override_settings(SOLO_CACHE='default')
+    @override_settings(SOLO_CACHE="default")
     def test_file_upload_if_cache_enabled(self):
-        cfg = SiteConfiguration.objects.create(site_name='Test Config', file=SimpleUploadedFile("file.pdf", None))
+        cfg = SiteConfiguration.objects.create(
+            site_name="Test Config", file=SimpleUploadedFile("file.pdf", None)
+        )
         output = self.template.render(Context())
         self.assertIn(cfg.file.url, output)
 
-    @override_settings(SOLO_CACHE_PREFIX='other')
+    @override_settings(SOLO_CACHE_PREFIX="other")
     def test_cache_prefix_overriding(self):
         key = SiteConfiguration.get_cache_key()
-        prefix = key.partition(':')[0]
-        self.assertEqual(prefix, 'other')
+        prefix = key.partition(":")[0]
+        self.assertEqual(prefix, "other")
 
 
 class SingletonWithExplicitIdTest(TestCase):
-
     def setUp(self):
         SiteConfigurationWithExplicitlyGivenId.objects.all().delete()
 

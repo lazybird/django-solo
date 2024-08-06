@@ -1,3 +1,26 @@
+Unreleased
+==========
+
+django-solo-2.3.0
+=================
+
+Date: 1 July, 2024
+
+* Add typing support
+* Deprecate `solo.models.get_cache`
+* Switch to `pyproject.toml`
+* Switch to Ruff for formatting and linting
+
+django-solo-2.2.0
+=================
+
+Date: 1 January, 2024
+
+* Add support for Python 3.12
+* Drop support for Python 3.7
+* Add support for Django 5.0
+* Drop support for end of life Django 4.0 and 4.1
+
 django-solo-2.1.0
 =================
 

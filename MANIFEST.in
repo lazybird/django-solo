@@ -1,5 +1,6 @@
 include *.md
 include LICENSE
 include CHANGES
+include solo/py.typed
 recursive-include solo/templates *
 recursive-include solo/locale *.mo *.po
