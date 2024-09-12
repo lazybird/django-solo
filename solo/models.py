@@ -64,7 +64,7 @@ class SingletonModel(models.Model):
     @classmethod
     def get_cache_key(cls) -> str:
         prefix = getattr(settings, "SOLO_CACHE_PREFIX", solo_settings.SOLO_CACHE_PREFIX)
-        return f"{prefix}:{cls.__name__.lower()}"
+        return f"{prefix}:{cls.__module__.lower()}:{cls.__name__.lower()}"
 
     @classmethod
     def get_solo(cls) -> Self:
