@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
+from solo.tests.testapp2.models import SiteConfiguration as SiteConfiguration2
 
 
 class SingletonTest(TestCase):
@@ -103,3 +104,11 @@ class SingletonWithExplicitIdTest(TestCase):
     def test_when_singleton_instance_id_is_given_created_item_will_have_given_instance_id(self):
         item = SiteConfigurationWithExplicitlyGivenId.get_solo()
         self.assertEqual(item.pk, SiteConfigurationWithExplicitlyGivenId.singleton_instance_id)
+
+
+class SingletonsWithAmbiguousNameTest(TestCase):
+    def test_cache_key_is_not_ambiguous(self):
+        assert SiteConfiguration.get_cache_key() != SiteConfiguration2.get_cache_key()
+
+    def test_get_solo_returns_the_correct_singleton(self):
+        assert SiteConfiguration.get_solo() != SiteConfiguration2.get_solo()
