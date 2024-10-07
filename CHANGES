@@ -1,6 +1,8 @@
 Unreleased
 ==========
 
+* Fix similarly named models from different apps having the same cache key
+
 django-solo-2.3.0
 =================
 
