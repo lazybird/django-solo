@@ -64,6 +64,8 @@ class SingletonModel(models.Model):
     @classmethod
     def get_cache_key(cls) -> str:
         prefix = getattr(settings, "SOLO_CACHE_PREFIX", solo_settings.SOLO_CACHE_PREFIX)
+        # Include the model's module in the cache key so similarly named models from different
+        # apps do not have the same cache key.
         return f"{prefix}:{cls.__module__.lower()}:{cls.__name__.lower()}"
 
     @classmethod
