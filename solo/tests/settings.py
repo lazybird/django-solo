@@ -17,6 +17,7 @@ DATABASES = {
 INSTALLED_APPS = (
     "solo",
     "solo.tests",
+    "solo.tests.testapp2",
 )
 
 SECRET_KEY = "any-key"
