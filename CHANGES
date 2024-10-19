@@ -6,6 +6,7 @@ Unreleased
 * Add support for Python 3.13
 * Drop support for end of life Django 3.2
 * Add support for Django 5.1
+* Improve error handling in template tag
 
 django-solo-2.3.0
 =================
