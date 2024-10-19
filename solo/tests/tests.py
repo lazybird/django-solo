@@ -1,6 +1,6 @@
 from django.core.cache import caches
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.template import Context, Template
+from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
 from django.test.utils import override_settings
 
@@ -13,6 +13,18 @@ class SingletonTest(TestCase):
         self.template = Template(
             "{% load solo_tags %}"
             '{% get_solo "tests.SiteConfiguration" as site_config  %}'
+            "{{ site_config.site_name }}"
+            "{{ site_config.file.url }}"
+        )
+        self.template_invalid_app = Template(
+            "{% load solo_tags %}"
+            '{% get_solo "invalid_app.SiteConfiguration" as site_config  %}'
+            "{{ site_config.site_name }}"
+            "{{ site_config.file.url }}"
+        )
+        self.template_invalid_model = Template(
+            "{% load solo_tags %}"
+            '{% get_solo "tests.InvalidModel" as site_config  %}'
             "{{ site_config.site_name }}"
             "{{ site_config.file.url }}"
         )
@@ -95,6 +107,14 @@ class SingletonTest(TestCase):
         key = SiteConfiguration.get_cache_key()
         prefix = key.partition(":")[0]
         self.assertEqual(prefix, "other")
+
+    def test_template_tag_invalid_app_name(self):
+        with self.assertRaises(TemplateSyntaxError):
+            self.template_invalid_app.render(Context())
+
+    def test_template_invalid_model_name(self):
+        with self.assertRaises(TemplateSyntaxError):
+            self.template_invalid_model.render(Context())
 
 
 class SingletonWithExplicitIdTest(TestCase):
