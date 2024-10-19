@@ -2,6 +2,10 @@ Unreleased
 ==========
 
 * Fix similarly named models from different apps having the same cache key
+* Drop support for Python 3.8
+* Add support for Python 3.13
+* Drop support for end of life Django 3.2
+* Add support for Django 5.1
 
 django-solo-2.3.0
 =================

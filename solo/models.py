@@ -26,7 +26,7 @@ def get_cache(cache_name: str) -> BaseCache:
         DeprecationWarning,
         stacklevel=2,
     )
-    return caches[cache_name]  # type: ignore[no-any-return]  # mypy bug, unable to get a MRE
+    return caches[cache_name]
 
 
 class SingletonModel(models.Model):
@@ -73,11 +73,11 @@ class SingletonModel(models.Model):
         cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
         if not cache_name:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
-            return obj  # type: ignore[return-value]
+            return obj
         cache = caches[cache_name]
         cache_key = cls.get_cache_key()
         obj = cache.get(cache_key)
         if not obj:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
-        return obj  # type: ignore[return-value]
+        return obj
