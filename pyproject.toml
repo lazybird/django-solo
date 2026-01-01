@@ -47,7 +47,6 @@ exclude = "solo/tests"
 
 [tool.ruff]
 line-length = 100
-target-version = "py39"
 
 [tool.ruff.lint]
 select = [
