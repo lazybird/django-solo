@@ -1,5 +1,7 @@
-Unreleased
-==========
+django-solo-2.5.0
+=================
+
+Date: 1 January, 2026
 
 * Add support for Django 5.2 and 6.0
 * Drop support for Python 3.9.
