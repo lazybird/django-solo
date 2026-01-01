@@ -1,5 +1,5 @@
-Unreleased
-==========
+django-solo-2.5.1
+=================
 
 * Fix license metadata to be compatible with modern setuptools.
 
