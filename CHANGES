@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* Fix license metadata to be compatible with modern setuptools.
+
 django-solo-2.5.0
 =================
 

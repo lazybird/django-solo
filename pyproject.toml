@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0.0"]
+requires = ["setuptools>=77.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,7 +29,8 @@ dependencies = [
     "django>=4.2",
     "typing-extensions>=4.0.1; python_version < '3.11'",
 ]
-license = {text = "Creative Commons Attribution 3.0 Unported"}
+license = "CC-BY-3.0"
+license-files = ["LICENSE"]
 dynamic = ["version"]
 
 [tool.setuptools.dynamic]
