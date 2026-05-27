@@ -1,3 +1,13 @@
+Unreleased
+==========
+
+* Fix cache poisoning when a singleton is saved, deleted, or read on a cache miss
+  inside a transaction that is later rolled back. Cache updates from ``save()``,
+  ``delete()`` and ``get_solo()`` are now deferred until the surrounding
+  transaction commits (via ``transaction.on_commit``), so a rollback no longer
+  leaves the cache disagreeing with the database. In autocommit mode the callbacks
+  fire immediately, so non-transactional behaviour is unchanged.
+
 django-solo-2.5.1
 =================
 

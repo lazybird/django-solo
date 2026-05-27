@@ -6,7 +6,7 @@ from typing import Any
 
 from django.conf import settings
 from django.core.cache import BaseCache, caches
-from django.db import models
+from django.db import models, transaction
 
 from solo import settings as solo_settings
 
@@ -38,10 +38,14 @@ class SingletonModel(models.Model):
     def save(self, *args: Any, **kwargs: Any) -> None:
         self.pk = self.singleton_instance_id
         super().save(*args, **kwargs)
-        self.set_to_cache()
+        # Defer until commit so a rollback can't poison the cache (fires
+        # immediately in autocommit mode).
+        transaction.on_commit(self.set_to_cache)
 
     def delete(self, *args: Any, **kwargs: Any) -> tuple[int, dict[str, int]]:
-        self.clear_cache()
+        # Defer until commit so a rollback can't poison the cache (fires
+        # immediately in autocommit mode).
+        transaction.on_commit(self.clear_cache)
         return super().delete(*args, **kwargs)
 
     @classmethod
@@ -79,5 +83,8 @@ class SingletonModel(models.Model):
         obj = cache.get(cache_key)
         if not obj:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
-            obj.set_to_cache()
+            # Defer until commit so a rollback (e.g. of a row created here, or of
+            # an uncommitted change we just read) can't poison the cache (fires
+            # immediately in autocommit mode).
+            transaction.on_commit(obj.set_to_cache)
         return obj
