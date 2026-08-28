@@ -242,8 +242,10 @@ CACHES = {
     },
 }
 
-SOLO_CACHE = 'local'
+SOLO_CACHE = 'default'
 ```
+
+> **Warning:** `LocMemCache` is per-process (each process has its own private cache instance) and is not memory-efficient — see [Django docs: Local-memory caching](https://docs.djangoproject.com/en/stable/topics/cache/#local-memory-caching). Do not use `SOLO_CACHE='local'` in production with multiple processes/workers; use a shared backend (e.g. `MemcachedCache`/`RedisCache`) via `SOLO_CACHE='default'`.
 
 Caching will be disabled if set to `None`.
 
