@@ -126,6 +126,20 @@ class SingletonWithExplicitIdTest(TestCase):
         self.assertEqual(item.pk, SiteConfigurationWithExplicitlyGivenId.singleton_instance_id)
 
 
+class AsyncSingletonTest(TestCase):
+    def setUp(self):
+        SiteConfiguration.objects.all().delete()
+
+    async def test_aget_solo_creates_default(self):
+        config = await SiteConfiguration.aget_solo()
+        self.assertEqual(config.site_name, "Default Config")
+
+    async def test_aget_solo_returns_existing(self):
+        await SiteConfiguration.objects.acreate(site_name="Async Config")
+        config = await SiteConfiguration.aget_solo()
+        self.assertEqual(config.site_name, "Async Config")
+
+
 class SingletonsWithAmbiguousNameTest(TestCase):
     def test_cache_key_is_not_ambiguous(self):
         assert SiteConfiguration.get_cache_key() != SiteConfiguration2.get_cache_key()

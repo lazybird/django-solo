@@ -79,6 +79,9 @@ config = SiteConfiguration.objects.get()
 
 # get_solo will create the item if it does not already exist
 config = SiteConfiguration.get_solo()
+
+# In async code, use aget_solo instead of wrapping get_solo with sync_to_async
+config = await SiteConfiguration.aget_solo()
 ```
 
 In your model, note how you did not have to provide a `verbose_name_plural` field -
