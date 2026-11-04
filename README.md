@@ -51,7 +51,7 @@ from solo.models import SingletonModel
 
 
 class SiteConfiguration(SingletonModel):
-    site_name = models.CharField(max_length=255, default='Site Name')
+    site_name = models.CharField(max_length=255, default="Site Name")
     maintenance_mode = models.BooleanField(default=False)
 
     def __str__(self):
@@ -75,6 +75,7 @@ admin.site.register(SiteConfiguration, SingletonModelAdmin)
 ```python
 # There is only one item in the table, you can get it this way:
 from .models import SiteConfiguration
+
 config = SiteConfiguration.objects.get()
 
 # get_solo will create the item if it does not already exist
@@ -212,7 +213,7 @@ You can change the name `get_solo` using the
 `GET_SOLO_TEMPLATE_TAG_NAME` setting.
 
 ```python
-GET_SOLO_TEMPLATE_TAG_NAME = 'get_config'
+GET_SOLO_TEMPLATE_TAG_NAME = "get_config"
 ```
 
 ### Admin override flag
@@ -233,16 +234,16 @@ could define the `CACHES` and the `SOLO_CACHE` settings like this:
 
 ```python
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
+        "LOCATION": "127.0.0.1:11211",
     },
-    'local': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    "local": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     },
 }
 
-SOLO_CACHE = 'local'
+SOLO_CACHE = "local"
 ```
 
 Caching will be disabled if set to `None`.
@@ -253,7 +254,7 @@ Caching will be disabled if set to `None`.
 The cache timeout in seconds.
 
 ```python
-SOLO_CACHE_TIMEOUT = 60*5  # 5 mins
+SOLO_CACHE_TIMEOUT = 60 * 5  # 5 mins
 ```
 
 ### Cache prefix
@@ -261,7 +262,7 @@ SOLO_CACHE_TIMEOUT = 60*5  # 5 mins
 The prefix to use for the cache key.
 
 ```python
-SOLO_CACHE_PREFIX = 'solo'
+SOLO_CACHE_PREFIX = "solo"
 ```
 
 Getting the code

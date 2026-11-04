@@ -1,20 +1,13 @@
 from __future__ import annotations
 
-import sys
 import warnings
-from typing import Any
+from typing import Any, Self
 
 from django.conf import settings
 from django.core.cache import BaseCache, caches
 from django.db import models
 
 from solo import settings as solo_settings
-
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
-
 
 DEFAULT_SINGLETON_INSTANCE_ID = 1
 
