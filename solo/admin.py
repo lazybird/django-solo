@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from django.contrib import admin
 from django.db.models import Model
@@ -12,10 +12,13 @@ from django.utils.translation import gettext as _
 from solo import settings as solo_settings
 from solo.models import DEFAULT_SINGLETON_INSTANCE_ID
 
+if TYPE_CHECKING:
+    from django.template.response import _TemplateForResponseT
+
 
 class SingletonModelAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
-    object_history_template = "admin/solo/object_history.html"
-    change_form_template = "admin/solo/change_form.html"
+    object_history_template: ClassVar[_TemplateForResponseT | None] = "admin/solo/object_history.html"
+    change_form_template: ClassVar[_TemplateForResponseT | None] = "admin/solo/change_form.html"
 
     def has_add_permission(self, request: HttpRequest) -> bool:
         return False
