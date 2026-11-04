@@ -3,6 +3,7 @@ from __future__ import annotations
 import warnings
 from typing import Any, Self
 
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core.cache import BaseCache, caches
 from django.db import models
@@ -74,3 +75,7 @@ class SingletonModel(models.Model):
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
         return obj
+
+    @classmethod
+    async def aget_solo(cls) -> Self:
+        return await sync_to_async(cls.get_solo)()
