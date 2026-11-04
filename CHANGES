@@ -1,5 +1,7 @@
-Unreleased
-==========
+django-solo-2.6.0
+=================
+
+Date: 4 November, 2026
 
 * Drop support for Python 3.10.
 * Add support for Python 3.15.
