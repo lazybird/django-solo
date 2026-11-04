@@ -1,9 +1,16 @@
+from unittest.mock import patch
+
+from django.conf import settings
+from django.contrib.admin import AdminSite
 from django.core.cache import caches
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template import Context, Template, TemplateSyntaxError
-from django.test import TestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from django.test.utils import override_settings
+from django.utils.html import format_html
+from django.utils.translation import gettext, override
 
+from solo.admin import SingletonModelAdmin
 from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
 from solo.tests.testapp2.models import SiteConfiguration as SiteConfiguration2
 
@@ -132,3 +139,45 @@ class SingletonsWithAmbiguousNameTest(TestCase):
 
     def test_get_solo_returns_the_correct_singleton(self):
         assert SiteConfiguration.get_solo() != SiteConfiguration2.get_solo()
+
+
+@override_settings(
+    INSTALLED_APPS=[
+        *settings.INSTALLED_APPS,
+        "django.contrib.admin",
+        "django.contrib.auth",
+        "django.contrib.contenttypes",
+    ],
+    USE_I18N=True,
+)
+class SingletonAdminTranslationTest(SimpleTestCase):
+    def test_change_messages_use_django_admin_translations(self):
+        model_admin = SingletonModelAdmin(SiteConfiguration, AdminSite())
+        obj = SiteConfiguration(site_name="<script>unsafe</script>")
+        for language in ("en", "nb", "es", "de"):
+            for continue_editing in (False, True):
+                with self.subTest(language=language, continue_editing=continue_editing):
+                    data = {"_continue": "1"} if continue_editing else {}
+                    request = RequestFactory().post("/admin/config/", data)
+                    message = (
+                        "The {name} “{obj}” was changed successfully. You may edit it again below."
+                        if continue_editing
+                        else "The {name} “{obj}” was changed successfully."
+                    )
+                    with (
+                        override(language),
+                        patch.object(model_admin, "message_user") as notify,
+                        patch.object(
+                            SiteConfiguration, "__str__", return_value="<script>unsafe</script>"
+                        ),
+                    ):
+                        translated = gettext(message)
+                        if language != "en":
+                            self.assertNotEqual(translated, message)
+                        response = model_admin.response_change(request, obj)
+                        expected = format_html(
+                            translated, name=obj._meta.verbose_name, obj=str(obj)
+                        )
+                    self.assertEqual(notify.call_args.args[1], expected)
+                    self.assertNotIn("<script>", notify.call_args.args[1])
+                    self.assertEqual(response.url, request.path if continue_editing else "../../")
