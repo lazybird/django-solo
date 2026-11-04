@@ -17,7 +17,9 @@ if TYPE_CHECKING:
 
 
 class SingletonModelAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
-    object_history_template: ClassVar[_TemplateForResponseT | None] = "admin/solo/object_history.html"
+    object_history_template: ClassVar[_TemplateForResponseT | None] = (
+        "admin/solo/object_history.html"
+    )
     change_form_template: ClassVar[_TemplateForResponseT | None] = "admin/solo/change_form.html"
 
     def has_add_permission(self, request: HttpRequest) -> bool:
