@@ -129,6 +129,7 @@ class SingletonWithExplicitIdTest(TestCase):
 class AsyncSingletonTest(TestCase):
     def setUp(self):
         SiteConfiguration.objects.all().delete()
+        SiteConfiguration.clear_cache()
 
     async def test_aget_solo_creates_default(self):
         config = await SiteConfiguration.aget_solo()
