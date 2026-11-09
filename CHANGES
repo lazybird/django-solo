@@ -1,3 +1,10 @@
+django-solo-2.7.0
+=================
+
+Date: 9 November, 2026
+
+* Add async aget_solo() function.
+
 django-solo-2.6.0
 =================
 
