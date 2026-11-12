@@ -119,8 +119,9 @@ Supported Languages
 -------------------
 
 - English
-- Spanish
 - German
+- Indonesian
+- Spanish
 
 Admin
 -----
