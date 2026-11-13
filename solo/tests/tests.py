@@ -12,7 +12,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext, override
 
 from solo.admin import SingletonModelAdmin
-from solo.models import prepare_for_cache
+from solo.models import _CACHE_VERSION, prepare_for_cache
 from solo.tests.models import (
     ModelForRelations,
     SingletonWithRelation,
@@ -67,7 +67,9 @@ class SingletonTest(TestCase):
         fake_configuration = SiteConfiguration(site_name="Config In Cache")
         assert fake_configuration.file.name is not None
         fake_configuration.file.storage.delete(fake_configuration.file.name)
-        self.cache.set(self.cache_key, prepare_for_cache(fake_configuration), 10)
+        self.cache.set(
+            self.cache_key, prepare_for_cache(fake_configuration), 10, version=_CACHE_VERSION
+        )
         self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Database", output)
@@ -79,7 +81,9 @@ class SingletonTest(TestCase):
         SiteConfiguration.objects.create(site_name="Config In Database")
         fake_configuration = SiteConfiguration(site_name="Config In Cache")
         assert fake_configuration.file.name is not None
-        self.cache.set(self.cache_key, prepare_for_cache(fake_configuration), 10)
+        self.cache.set(
+            self.cache_key, prepare_for_cache(fake_configuration), 10, version=_CACHE_VERSION
+        )
         self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Cache", output)
@@ -89,17 +93,17 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE="default")
     def test_delete_if_cache_enabled(self):
         self.assertEqual(SiteConfiguration.objects.count(), 0)
-        self.assertIsNone(self.cache.get(self.cache_key))
+        self.assertIsNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
 
         one_cfg = SiteConfiguration.get_solo()
         one_cfg.site_name = "TEST SITE PLEASE IGNORE"
         one_cfg.save()
         self.assertEqual(SiteConfiguration.objects.count(), 1)
-        self.assertIsNotNone(self.cache.get(self.cache_key))
+        self.assertIsNotNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
 
         one_cfg.delete()
         self.assertEqual(SiteConfiguration.objects.count(), 0)
-        self.assertIsNone(self.cache.get(self.cache_key))
+        self.assertIsNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
         self.assertEqual(SiteConfiguration.get_solo().site_name, "Default Config")
 
     @override_settings(SOLO_CACHE=None)
@@ -156,7 +160,7 @@ class SingletonTest(TestCase):
         cache_key = SingletonWithRelation.get_cache_key()
         cache = caches["default"]
 
-        cached_value = cache.get(cache_key)
+        cached_value = cache.get(cache_key, version=_CACHE_VERSION)
 
         self.assertIsNotNone(cached_value)
         try:

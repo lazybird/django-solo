@@ -15,6 +15,12 @@ from solo import settings as solo_settings
 
 DEFAULT_SINGLETON_INSTANCE_ID = 1
 
+_CACHE_VERSION = 2
+"""
+Version of the internal cache data format.
+
+Increment this when modifying the cache data (de)serialization logic.
+"""
 
 def get_cache(cache_name: str) -> BaseCache:
     warnings.warn(
@@ -89,7 +95,7 @@ class SingletonModel(models.Model):
         if cache_name:
             cache = caches[cache_name]
             cache_key = cls.get_cache_key()
-            cache.delete(cache_key)
+            cache.delete(cache_key, version=_CACHE_VERSION)
 
     def set_to_cache(self) -> None:
         cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
@@ -99,7 +105,7 @@ class SingletonModel(models.Model):
         cache_key = self.get_cache_key()
         timeout = getattr(settings, "SOLO_CACHE_TIMEOUT", solo_settings.SOLO_CACHE_TIMEOUT)
         cache_value = prepare_for_cache(self)
-        cache.set(cache_key, cache_value, timeout)
+        cache.set(cache_key, cache_value, timeout, version=_CACHE_VERSION)
 
     @classmethod
     def get_cache_key(cls) -> str:
@@ -116,7 +122,7 @@ class SingletonModel(models.Model):
             return obj
         cache = caches[cache_name]
         cache_key = cls.get_cache_key()
-        model_data = cache.get(cache_key, default=None)
+        model_data = cache.get(cache_key, default=None, version=_CACHE_VERSION)
         if model_data is None:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
