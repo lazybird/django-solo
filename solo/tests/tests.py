@@ -168,6 +168,31 @@ class SingletonTest(TestCase):
         with self.assertNumQueries(0):
             SingletonWithRelation.get_solo()
 
+    @override_settings(
+        CACHES={"default": {"BACKEND": "solo.tests.cache_backend.CustomCache"}},
+        SOLO_CACHE="default",
+    )
+    def test_old_cache_data_format_does_not_crash_cache_mechanism(self):
+        """
+        Assert that previous pickle-based cache data does not cause problems.
+        """
+        cache, cache_key = caches["default"], SiteConfiguration.get_cache_key()
+        self.addCleanup(cache.clear)
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        cache.set(cache_key, fake_configuration, 10)
+
+        # the cached data was never written to DB, and existing cache data in the old
+        # format must be ignored and lead to a new DB fetch.
+        # Expected queries:
+        # 1. transaction start
+        # 2. transaction savepoint
+        # 3. insert DB record
+        # 4. transaction commit
+        with self.assertNumQueries(4):
+            refreshed_instance = SiteConfiguration.get_solo()
+
+        self.assertNotEqual(refreshed_instance, "Config In Cache")
+
     def test_template_tag_invalid_app_name(self):
         with self.assertRaises(TemplateSyntaxError):
             self.template_invalid_app.render(Context())
