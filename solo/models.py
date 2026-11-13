@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import warnings
+from collections.abc import Mapping
 from typing import Any, Self
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
+from django.core import serializers
 from django.core.cache import BaseCache, caches
 from django.db import models
+from django.db.models.fields.mixins import FieldCacheMixin
 
 from solo import settings as solo_settings
 
@@ -21,6 +24,48 @@ def get_cache(cache_name: str) -> BaseCache:
         stacklevel=2,
     )
     return caches[cache_name]
+
+
+def prepare_for_cache(instance: models.Model) -> Mapping[str, object]:
+    """
+    Prepare model instance data for the cache.
+
+    The return value must consist of types that can be JSON-encoded to support
+    cache backends that don't rely on pickle. Cache backends are responsible for
+    using an appropriate serializer class, e.g.
+    :class:`django.core.serializers.json.DjangoJSONEncoder`
+    """
+    data = serializers.serialize("python", [instance])[0]
+
+    opts = instance._meta
+    related: dict[str, Mapping[str, object]] = {}
+    for field in opts.concrete_fields:
+        # don't hit the DB when serializing related fields along
+        if (
+            not field.is_relation
+            or not isinstance(field, FieldCacheMixin)
+            or not field.is_cached(instance)
+        ):
+            continue
+        related_value = field.get_cached_value(instance)
+        assert related_value is not None
+        related[field.name] = prepare_for_cache(related_value)
+
+    return {"object": data, "related": related}
+
+
+def recreate_from_cache(data: Mapping[str, object]) -> models.Model:
+    # deserialize the top-level object first and then figure out the related fields
+    instance = next(serializers.deserialize("python", [data["object"]])).object
+    instance._state.adding = False
+
+    # and recursively re-populate the related fields
+    assert isinstance(data["related"], Mapping)
+    for name, related_data in data["related"].items():
+        related_object = recreate_from_cache(related_data)
+        setattr(instance, name, related_object)
+
+    return instance
 
 
 class SingletonModel(models.Model):
@@ -53,7 +98,8 @@ class SingletonModel(models.Model):
         cache = caches[cache_name]
         cache_key = self.get_cache_key()
         timeout = getattr(settings, "SOLO_CACHE_TIMEOUT", solo_settings.SOLO_CACHE_TIMEOUT)
-        cache.set(cache_key, self, timeout)
+        cache_value = prepare_for_cache(self)
+        cache.set(cache_key, cache_value, timeout)
 
     @classmethod
     def get_cache_key(cls) -> str:
@@ -70,10 +116,14 @@ class SingletonModel(models.Model):
             return obj
         cache = caches[cache_name]
         cache_key = cls.get_cache_key()
-        obj = cache.get(cache_key)
-        if not obj:
+        model_data = cache.get(cache_key, default=None)
+        if model_data is None:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
+        else:
+            instance = recreate_from_cache(model_data)
+            assert isinstance(instance, cls)
+            obj = instance
         return obj
 
     @classmethod
