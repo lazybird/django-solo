@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import warnings
 from collections.abc import Mapping
 from typing import Any, Self
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core import serializers
-from django.core.cache import BaseCache, caches
+from django.core.cache import caches
 from django.db import models
 from django.db.models.fields.mixins import FieldCacheMixin
 
@@ -21,15 +20,6 @@ Version of the internal cache data format.
 
 Increment this when modifying the cache data (de)serialization logic.
 """
-
-def get_cache(cache_name: str) -> BaseCache:
-    warnings.warn(
-        "'get_cache' is deprecated and will be removed in django-solo 2.4.0. "
-        "Instead, use 'caches' from 'django.core.cache'.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return caches[cache_name]
 
 
 def prepare_for_cache(instance: models.Model) -> Mapping[str, object]:
