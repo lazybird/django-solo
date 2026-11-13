@@ -11,7 +11,12 @@ from django.utils.html import format_html
 from django.utils.translation import gettext, override
 
 from solo.admin import SingletonModelAdmin
-from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
+from solo.tests.models import (
+    ModelForRelations,
+    SingletonWithRelation,
+    SiteConfiguration,
+    SiteConfigurationWithExplicitlyGivenId,
+)
 from solo.tests.testapp2.models import SiteConfiguration as SiteConfiguration2
 
 
@@ -114,6 +119,22 @@ class SingletonTest(TestCase):
         key = SiteConfiguration.get_cache_key()
         prefix = key.partition(":")[0]
         self.assertEqual(prefix, "other")
+
+    @override_settings(SOLO_CACHE="default")
+    def test_cache_includes_relational_fields(self):
+        related_obj = ModelForRelations.objects.create()
+        SingletonWithRelation.objects.create(fk_relation=related_obj)
+        SingletonWithRelation.clear_cache()
+
+        with self.assertNumQueries(1):  # lookup & join of related model
+            singleton = SingletonWithRelation.get_solo()
+            self.assertIsNotNone(singleton.fk_relation)
+
+        # now the record is cached and retrieving it again should not query the
+        # database again
+        with self.assertNumQueries(0):
+            cached_singleton = SingletonWithRelation.get_solo()
+            self.assertIsNotNone(cached_singleton.fk_relation)
 
     def test_template_tag_invalid_app_name(self):
         with self.assertRaises(TemplateSyntaxError):
