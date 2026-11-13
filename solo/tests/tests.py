@@ -12,6 +12,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext, override
 
 from solo.admin import SingletonModelAdmin
+from solo.models import prepare_for_cache
 from solo.tests.models import (
     ModelForRelations,
     SingletonWithRelation,
@@ -62,8 +63,12 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE="default")
     def test_template_tag_uses_cache_if_enabled(self):
         SiteConfiguration.objects.create(site_name="Config In Database")
-        fake_configuration = {"site_name": "Config In Cache"}
-        self.cache.set(self.cache_key, fake_configuration, 10)
+        # use in-memory fake object
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        assert fake_configuration.file.name is not None
+        fake_configuration.file.storage.delete(fake_configuration.file.name)
+        self.cache.set(self.cache_key, prepare_for_cache(fake_configuration), 10)
+        self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Database", output)
         self.assertNotIn("Default Config", output)
@@ -72,8 +77,10 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE=None)
     def test_template_tag_uses_database_if_cache_disabled(self):
         SiteConfiguration.objects.create(site_name="Config In Database")
-        fake_configuration = {"site_name": "Config In Cache"}
-        self.cache.set(self.cache_key, fake_configuration, 10)
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        assert fake_configuration.file.name is not None
+        self.cache.set(self.cache_key, prepare_for_cache(fake_configuration), 10)
+        self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Cache", output)
         self.assertNotIn("Default Config", output)
@@ -123,6 +130,7 @@ class SingletonTest(TestCase):
 
     @override_settings(SOLO_CACHE="default")
     def test_cache_includes_relational_fields(self):
+        self.addCleanup(SingletonWithRelation.clear_cache)
         related_obj = ModelForRelations.objects.create()
         SingletonWithRelation.objects.create(fk_relation=related_obj)
         SingletonWithRelation.clear_cache()
