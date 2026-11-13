@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 from django.conf import settings
@@ -11,7 +12,13 @@ from django.utils.html import format_html
 from django.utils.translation import gettext, override
 
 from solo.admin import SingletonModelAdmin
-from solo.tests.models import SiteConfiguration, SiteConfigurationWithExplicitlyGivenId
+from solo.models import _CACHE_VERSION, prepare_for_cache
+from solo.tests.models import (
+    ModelForRelations,
+    SingletonWithRelation,
+    SiteConfiguration,
+    SiteConfigurationWithExplicitlyGivenId,
+)
 from solo.tests.testapp2.models import SiteConfiguration as SiteConfiguration2
 
 
@@ -56,8 +63,14 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE="default")
     def test_template_tag_uses_cache_if_enabled(self):
         SiteConfiguration.objects.create(site_name="Config In Database")
-        fake_configuration = {"site_name": "Config In Cache"}
-        self.cache.set(self.cache_key, fake_configuration, 10)
+        # use in-memory fake object
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        assert fake_configuration.file.name is not None
+        fake_configuration.file.storage.delete(fake_configuration.file.name)
+        self.cache.set(
+            self.cache_key, prepare_for_cache(fake_configuration), 10, version=_CACHE_VERSION
+        )
+        self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Database", output)
         self.assertNotIn("Default Config", output)
@@ -66,8 +79,12 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE=None)
     def test_template_tag_uses_database_if_cache_disabled(self):
         SiteConfiguration.objects.create(site_name="Config In Database")
-        fake_configuration = {"site_name": "Config In Cache"}
-        self.cache.set(self.cache_key, fake_configuration, 10)
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        assert fake_configuration.file.name is not None
+        self.cache.set(
+            self.cache_key, prepare_for_cache(fake_configuration), 10, version=_CACHE_VERSION
+        )
+        self.addCleanup(self.cache.clear)
         output = self.template.render(Context())
         self.assertNotIn("Config In Cache", output)
         self.assertNotIn("Default Config", output)
@@ -76,17 +93,17 @@ class SingletonTest(TestCase):
     @override_settings(SOLO_CACHE="default")
     def test_delete_if_cache_enabled(self):
         self.assertEqual(SiteConfiguration.objects.count(), 0)
-        self.assertIsNone(self.cache.get(self.cache_key))
+        self.assertIsNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
 
         one_cfg = SiteConfiguration.get_solo()
         one_cfg.site_name = "TEST SITE PLEASE IGNORE"
         one_cfg.save()
         self.assertEqual(SiteConfiguration.objects.count(), 1)
-        self.assertIsNotNone(self.cache.get(self.cache_key))
+        self.assertIsNotNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
 
         one_cfg.delete()
         self.assertEqual(SiteConfiguration.objects.count(), 0)
-        self.assertIsNone(self.cache.get(self.cache_key))
+        self.assertIsNone(self.cache.get(self.cache_key, version=_CACHE_VERSION))
         self.assertEqual(SiteConfiguration.get_solo().site_name, "Default Config")
 
     @override_settings(SOLO_CACHE=None)
@@ -114,6 +131,71 @@ class SingletonTest(TestCase):
         key = SiteConfiguration.get_cache_key()
         prefix = key.partition(":")[0]
         self.assertEqual(prefix, "other")
+
+    @override_settings(SOLO_CACHE="default")
+    def test_cache_includes_relational_fields(self):
+        self.addCleanup(SingletonWithRelation.clear_cache)
+        related_obj = ModelForRelations.objects.create()
+        SingletonWithRelation.objects.create(fk_relation=related_obj)
+        SingletonWithRelation.clear_cache()
+
+        with self.assertNumQueries(1):  # lookup & join of related model
+            singleton = SingletonWithRelation.get_solo()
+            self.assertIsNotNone(singleton.fk_relation)
+
+        # now the record is cached and retrieving it again should not query the
+        # database again
+        with self.assertNumQueries(0):
+            cached_singleton = SingletonWithRelation.get_solo()
+            self.assertIsNotNone(cached_singleton.fk_relation)
+
+    @override_settings(
+        CACHES={"default": {"BACKEND": "solo.tests.cache_backend.CustomCache"}},
+        SOLO_CACHE="default",
+    )
+    def test_caching_is_compatible_with_json_serialization(self):
+        self.addCleanup(SingletonWithRelation.clear_cache)
+        # populate the cache
+        SingletonWithRelation.get_solo()
+        cache_key = SingletonWithRelation.get_cache_key()
+        cache = caches["default"]
+
+        cached_value = cache.get(cache_key, version=_CACHE_VERSION)
+
+        self.assertIsNotNone(cached_value)
+        try:
+            json.dumps(cached_value)
+        except TypeError as exc:
+            raise self.failureException("Cache data could not be JSON encoded") from exc
+
+        # load from cache
+        with self.assertNumQueries(0):
+            SingletonWithRelation.get_solo()
+
+    @override_settings(
+        CACHES={"default": {"BACKEND": "solo.tests.cache_backend.CustomCache"}},
+        SOLO_CACHE="default",
+    )
+    def test_old_cache_data_format_does_not_crash_cache_mechanism(self):
+        """
+        Assert that previous pickle-based cache data does not cause problems.
+        """
+        cache, cache_key = caches["default"], SiteConfiguration.get_cache_key()
+        self.addCleanup(cache.clear)
+        fake_configuration = SiteConfiguration(site_name="Config In Cache")
+        cache.set(cache_key, fake_configuration, 10)
+
+        # the cached data was never written to DB, and existing cache data in the old
+        # format must be ignored and lead to a new DB fetch.
+        # Expected queries:
+        # 1. transaction start
+        # 2. transaction savepoint
+        # 3. insert DB record
+        # 4. transaction commit
+        with self.assertNumQueries(4):
+            refreshed_instance = SiteConfiguration.get_solo()
+
+        self.assertNotEqual(refreshed_instance, "Config In Cache")
 
     def test_template_tag_invalid_app_name(self):
         with self.assertRaises(TemplateSyntaxError):
