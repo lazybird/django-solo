@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 from django.conf import settings
@@ -135,6 +136,29 @@ class SingletonTest(TestCase):
         with self.assertNumQueries(0):
             cached_singleton = SingletonWithRelation.get_solo()
             self.assertIsNotNone(cached_singleton.fk_relation)
+
+    @override_settings(
+        CACHES={"default": {"BACKEND": "solo.tests.cache_backend.CustomCache"}},
+        SOLO_CACHE="default",
+    )
+    def test_caching_is_compatible_with_json_serialization(self):
+        self.addCleanup(SingletonWithRelation.clear_cache)
+        # populate the cache
+        SingletonWithRelation.get_solo()
+        cache_key = SingletonWithRelation.get_cache_key()
+        cache = caches["default"]
+
+        cached_value = cache.get(cache_key)
+
+        self.assertIsNotNone(cached_value)
+        try:
+            json.dumps(cached_value)
+        except TypeError as exc:
+            raise self.failureException("Cache data could not be JSON encoded") from exc
+
+        # load from cache
+        with self.assertNumQueries(0):
+            SingletonWithRelation.get_solo()
 
     def test_template_tag_invalid_app_name(self):
         with self.assertRaises(TemplateSyntaxError):

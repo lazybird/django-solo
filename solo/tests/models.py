@@ -1,5 +1,6 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
+from django.utils import timezone
 
 from solo.models import SingletonModel
 
@@ -41,6 +42,7 @@ class SingletonWithRelationManager(models.Manager):
 class SingletonWithRelation(SingletonModel):
     # also covers one-to-one field as that's a subclass of foreignkey
     fk_relation = models.ForeignKey(ModelForRelations, on_delete=models.SET_NULL, null=True)
+    datetime = models.DateTimeField(default=timezone.now)
 
     # m2m is not explicitly modelled, as the proper data model would just be a flat
     # table since singletons will only ever have one record in the through table
