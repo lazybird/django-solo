@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, Self
+from typing import Any, Self, TypedDict
+from uuid import UUID
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
@@ -22,7 +23,24 @@ Increment this when modifying the cache data (de)serialization logic.
 """
 
 
-def prepare_for_cache(instance: models.Model) -> Mapping[str, object]:
+class PythonSerializerData(TypedDict):
+    model: str
+    pk: int | str | UUID
+    fields: Mapping[str, object]
+
+
+class CacheData(TypedDict):
+    object: PythonSerializerData
+    """
+    The instance data itself, serialized with the Python serializer.
+    """
+    related: Mapping[str, CacheData | None]
+    """
+    Nested cache data for values of related fields.
+    """
+
+
+def prepare_for_cache(instance: models.Model) -> CacheData:
     """
     Prepare model instance data for the cache.
 
@@ -34,7 +52,7 @@ def prepare_for_cache(instance: models.Model) -> Mapping[str, object]:
     data = serializers.serialize("python", [instance])[0]
 
     opts = instance._meta
-    related: dict[str, Mapping[str, object]] = {}
+    related: dict[str, CacheData | None] = {}
     for field in opts.concrete_fields:
         # don't hit the DB when serializing related fields along
         if (
@@ -44,21 +62,19 @@ def prepare_for_cache(instance: models.Model) -> Mapping[str, object]:
         ):
             continue
         related_value = field.get_cached_value(instance)
-        assert related_value is not None
-        related[field.name] = prepare_for_cache(related_value)
+        related[field.name] = None if related_value is None else prepare_for_cache(related_value)
 
     return {"object": data, "related": related}
 
 
-def recreate_from_cache(data: Mapping[str, object]) -> models.Model:
+def recreate_from_cache(data: CacheData) -> models.Model:
     # deserialize the top-level object first and then figure out the related fields
     instance = next(serializers.deserialize("python", [data["object"]])).object
     instance._state.adding = False
 
     # and recursively re-populate the related fields
-    assert isinstance(data["related"], Mapping)
     for name, related_data in data["related"].items():
-        related_object = recreate_from_cache(related_data)
+        related_object = None if related_data is None else recreate_from_cache(related_data)
         setattr(instance, name, related_object)
 
     return instance

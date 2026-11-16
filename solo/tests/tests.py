@@ -149,6 +149,21 @@ class SingletonTest(TestCase):
             cached_singleton = SingletonWithRelation.get_solo()
             self.assertIsNotNone(cached_singleton.fk_relation)
 
+    def test_cache_can_handle_null_relational_field(self):
+        self.addCleanup(SingletonWithRelation.clear_cache)
+        SingletonWithRelation.objects.create(fk_relation=None)
+        SingletonWithRelation.clear_cache()
+
+        with self.assertNumQueries(1):  # lookup & join of related model
+            singleton = SingletonWithRelation.get_solo()
+            self.assertIsNone(singleton.fk_relation)
+
+        # now the record is cached and retrieving it again should not query the
+        # database again
+        with self.assertNumQueries(0):
+            cached_singleton = SingletonWithRelation.get_solo()
+            self.assertIsNone(cached_singleton.fk_relation)
+
     @override_settings(
         CACHES={"default": {"BACKEND": "solo.tests.cache_backend.CustomCache"}},
         SOLO_CACHE="default",
