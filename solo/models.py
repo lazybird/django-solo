@@ -123,6 +123,7 @@ class SingletonModel(models.Model):
     @classmethod
     def get_solo(cls) -> Self:
         cache_name = getattr(settings, "SOLO_CACHE", solo_settings.SOLO_CACHE)
+        obj: Self
         if not cache_name:
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             return obj
@@ -133,9 +134,7 @@ class SingletonModel(models.Model):
             obj, _ = cls.objects.get_or_create(pk=cls.singleton_instance_id)
             obj.set_to_cache()
         else:
-            instance = recreate_from_cache(model_data)
-            assert isinstance(instance, cls)
-            obj = instance
+            obj = recreate_from_cache(model_data)  # type: ignore[assignment]
         return obj
 
     @classmethod
