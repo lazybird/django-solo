@@ -198,11 +198,42 @@ By default caching is disabled: every time `get_solo` retrieves the singleton
 object, there will be a database query.
 
 You can enable caching to only query the database when initially retrieving the
-object. The cache will also be updated when updates are made from the admin.
+object. The cache will be updated when the solo instance is saved, e.g. from the admin
+interface.
 
 The cache timeout is controlled via the `SOLO_CACHE_TIMEOUT` settings.
 The cache backend to be used is controlled via the `SOLO_CACHE` settings.
 
+Solo caching does not require `pickle` and is tested with JSON serialization. You
+may need a custom JSON encoder to properly serialize all Python data types.
+
+### ⚠️ Warning
+
+The choice of the backend used is important!
+
+Typically you'll want to pick a backend like Memcached or Redis (both are built into
+Django) that's shared with all application instances. Avoid using local-memory caching,
+as this cache is not shared between different processes. With local memory caching,
+changes made in one process will only be updated in other processes once the cache
+timeout has expired. This can result in situations that are hard to debug.
+
+Deploying with multiple processes is common with gunicorn, uwsgi or when you use
+containers to deploy your applications (e.g. in Kubernetes).
+
+### Configuration suggestions
+
+* Use Memcached, Redis or a third party shared cache and set long cache timeouts - this
+  avoids the majority of database hits while remaining up-to-date when instance changes
+  are saved.
+
+* If having stale caches for a short time is acceptable, you *can* use local memory
+  storage with short timeouts, which reduces deployment complexity at the cost of more
+  database hits.
+
+* For maximum performance, you can create a layered custom cache that reads from local
+  memory with a short timeout (e.g. only for the duration of the request/response cycle), while writes propagate to a shared cache with a long timeout. This can avoid multiple
+  network roundtrips to Redis/Memcached. Deployment and code complexity are high, but
+  performance is maximized.
 
 Settings
 --------
@@ -231,26 +262,32 @@ SOLO_ADMIN_SKIP_OBJECT_LIST_PAGE = True
 
 ### Cache backend
 
-Django provides a way to define multiple cache backends with the `CACHES`
-settings. If you want the singleton object to be cached separately, you
-could define the `CACHES` and the `SOLO_CACHE` settings like this:
+Solo supports caching out of the box, which can reduce database load. It's disabled by default. Caching requires you to configure Django's
+[`CACHES`](https://docs.djangoproject.com/en/stable/topics/cache/#setting-up-the-cache) setting, which is a mapping of aliases to cache backends.
+
+Then, configure `SOLO_CACHE` to point to the alias of the desired backend, for example:
 
 ```python
 CACHES = {
     "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
+    "memcache": {
         "BACKEND": "django.core.cache.backends.memcached.MemcachedCache",
         "LOCATION": "127.0.0.1:11211",
     },
-    "local": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    "redis": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
     },
 }
 
-SOLO_CACHE = "local"
+SOLO_CACHE = "memcache"  # or "redis"
 ```
 
-Caching will be disabled if set to `None`.
+Setting `SOLO_CACHE = None` disables caching (the default).
 
+See the [Caching](#caching) documentation for recommendations and pitfalls.
 
 ### Cache timeout
 
