@@ -1,3 +1,10 @@
+django-solo-2.8.0
+=================
+
+Date: 17 November, 2026
+
+* Support non-pickle based cache backends
+
 django-solo-2.7.0
 =================
 
