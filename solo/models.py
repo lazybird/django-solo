@@ -8,7 +8,7 @@ from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.core import serializers
 from django.core.cache import caches
-from django.db import models
+from django.db import models, router
 from django.db.models.fields.mixins import FieldCacheMixin
 
 from solo import settings as solo_settings
@@ -71,6 +71,7 @@ def recreate_from_cache(data: CacheData) -> models.Model:
     # deserialize the top-level object first and then figure out the related fields
     instance = next(serializers.deserialize("python", [data["object"]])).object
     instance._state.adding = False
+    instance._state.db = router.db_for_read(type(instance), instance=instance)
 
     # and recursively re-populate the related fields
     for name, related_data in data["related"].items():

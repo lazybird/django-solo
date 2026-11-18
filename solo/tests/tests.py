@@ -139,7 +139,9 @@ class SingletonTest(TestCase):
         SingletonWithRelation.objects.create(fk_relation=related_obj)
         SingletonWithRelation.clear_cache()
 
-        with self.assertNumQueries(1):  # lookup & join of related model
+        # 1. lookup & join of related model
+        # 2. lookup of related m2m field
+        with self.assertNumQueries(2):
             singleton = SingletonWithRelation.get_solo()
             self.assertIsNotNone(singleton.fk_relation)
 
@@ -154,7 +156,9 @@ class SingletonTest(TestCase):
         SingletonWithRelation.objects.create(fk_relation=None)
         SingletonWithRelation.clear_cache()
 
-        with self.assertNumQueries(1):  # lookup & join of related model
+        # 1. lookup & join of related model
+        # 2. lookup of related m2m field
+        with self.assertNumQueries(2):
             singleton = SingletonWithRelation.get_solo()
             self.assertIsNone(singleton.fk_relation)
 
