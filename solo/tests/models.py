@@ -36,16 +36,17 @@ class ModelForRelations(models.Model):
 class SingletonWithRelationManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.select_related("fk_relation")
+        return qs.select_related("fk_relation")  # m2m is deliberately excluded
 
 
 class SingletonWithRelation(SingletonModel):
     # also covers one-to-one field as that's a subclass of foreignkey
     fk_relation = models.ForeignKey(ModelForRelations, on_delete=models.SET_NULL, null=True)
     datetime = models.DateTimeField(default=timezone.now)
-
-    # m2m is not explicitly modelled, as the proper data model would just be a flat
-    # table since singletons will only ever have one record in the through table
+    # m2m is a bit of a weird construct with one side of the relation only having one
+    # record ever, but it's technically possible and known to have caused at least one
+    # regression
+    m2m = models.ManyToManyField(ModelForRelations, blank=True, related_name="+")
 
     objects = SingletonWithRelationManager()
 

@@ -139,7 +139,9 @@ class SingletonTest(TestCase):
         SingletonWithRelation.objects.create(fk_relation=related_obj)
         SingletonWithRelation.clear_cache()
 
-        with self.assertNumQueries(1):  # lookup & join of related model
+        # 1. lookup & join of related model
+        # 2. lookup of related m2m field
+        with self.assertNumQueries(2):
             singleton = SingletonWithRelation.get_solo()
             self.assertIsNotNone(singleton.fk_relation)
 
@@ -154,7 +156,9 @@ class SingletonTest(TestCase):
         SingletonWithRelation.objects.create(fk_relation=None)
         SingletonWithRelation.clear_cache()
 
-        with self.assertNumQueries(1):  # lookup & join of related model
+        # 1. lookup & join of related model
+        # 2. lookup of related m2m field
+        with self.assertNumQueries(2):
             singleton = SingletonWithRelation.get_solo()
             self.assertIsNone(singleton.fk_relation)
 
@@ -211,6 +215,17 @@ class SingletonTest(TestCase):
             refreshed_instance = SiteConfiguration.get_solo()
 
         self.assertNotEqual(refreshed_instance, "Config In Cache")
+
+    def test_cache_data_does_not_crash_when_interacting_with_m2m(self):
+        # regression test for https://github.com/lazybird/django-solo/issues/170 where
+        # the missing `instance._state.db` causes issues with m2m fields
+        related_obj = ModelForRelations.objects.create()
+        SingletonWithRelation.get_solo()  # populate cache
+        singleton = SingletonWithRelation.get_solo()  # get from cache
+
+        singleton.m2m.add(related_obj)
+
+        self.assertEqual(len(singleton.m2m.all()), 1)
 
     def test_template_tag_invalid_app_name(self):
         with self.assertRaises(TemplateSyntaxError):
